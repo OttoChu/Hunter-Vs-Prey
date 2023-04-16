@@ -1,0 +1,35 @@
+v1.3.2          23/06/2021
+
+- Improved very hard mode
+--------------------------
+v1.3.1          29/04/2021
+
+- Improved the replay feature
+- Added extra easy mode
+--------------------------
+v1.3.0          27/04/2021
+
+- Added a replay feature
+--------------------------
+v1.2.1          26/04/2021
+
+- Fixed a bug where the prey can use the square with mountains
+- Changed the player inputs
+--------------------------
+v1.2.0          21/04/2021
+
+- Added mountains that prevent players from using that square
+--------------------------
+v1.1.1          13/04/2021
+
+- Fixed a bug where the prey can go off the map and replace the hunter's position
+--------------------------
+v1.1.0          15/03/2021
+
+- Changed the player inputs
+- Prey now have a chance of moving after each go
+--------------------------
+v1.0.0          16/12/2020
+
+- Hunter Vs Prey is released
+--------------------------
