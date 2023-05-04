@@ -1,3 +1,16 @@
+--------------------------
+v1.4.0         04/05/2023
+
+- Added special move for the hunter
+    - Press 'E' to move 2 square in the same direction in the same turn (can hop over walls)
+    - Toggling the special move will count as a turn
+    - There will be 10 charges at start of each game
+- Improved AI of the Prey 
+- The maps are now all 10x10
+- Improved code quality
+- Improved performance of the game
+- Fixed a typo in the update log
+--------------------------
 v1.3.2          23/06/2021
 
 - Improved very hard mode
@@ -20,7 +33,7 @@ v1.2.0          21/04/2021
 
 - Added mountains that prevent players from using that square
 --------------------------
-v1.1.1          13/04/2021
+v1.1.1          16/04/2021
 
 - Fixed a bug where the prey can go off the map and replace the hunter's position
 --------------------------
