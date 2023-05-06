@@ -1,4 +1,10 @@
 --------------------------
+v1.4.1         06/05/2023
+
+- Improved AI of Prey 
+    - Will now try to go as far as possible from the Hunter
+- Added the ability to see how many moves you have made
+--------------------------
 v1.4.0         04/05/2023
 
 - Added special move for the hunter

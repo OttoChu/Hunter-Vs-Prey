@@ -1,13 +1,11 @@
-# Hunter Vs Prey v1.4.0
+# Hunter Vs Prey v1.4.1
 
-from random import randint, choice
+from random import randint
 from time import sleep
 import os
 from termcolor import cprint, colored as coloured
 import msvcrt
 
-from AStarPathFinding import a_star_pathfinding
-from FurthestPosition import furthest_position
 
 T = Tree = "🌳"
 P = Prey = "🦊"
@@ -25,7 +23,7 @@ class Game:
         Print the homepage onto the screen.
         Ask for input for what to show next.
 
-        :returns mode:  The mode chosen to show next. (1 for rules, 2 for new game)
+        :return mode:  The mode chosen to show next. (1 for rules, 2 for new game)
         """
         cprint("Welcome to Hunter Vs Prey!", "green", attrs=["bold"])
         print()
@@ -45,8 +43,6 @@ class Game:
                     if option == 3:
                         print("Thank you for playing!")
                         raise SystemExit
-                    
-
                     return option
             except (UnicodeDecodeError, ValueError):
                 pass
@@ -77,7 +73,7 @@ class Game:
         """
         Show the player that they have completed the game and ask if they wanted to play agin.
 
-        :returns: A boolean that indicates whether the player wants to play again or not.
+        :return: A boolean that indicates whether the player wants to play again or not.
         """
         self.game_over = True
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -104,7 +100,7 @@ class Game:
         """
         Ask the user to choose the game difficult.
 
-        :returns difficulty:    A number between 1(easiest) - 5(hardest) representing the chosen difficulty.
+        :return difficulty:    A number between 1(easiest) - 5(hardest) representing the chosen difficulty.
         """
         print("Game difficulties:")
         print(coloured("1. ", "black") + coloured("Extra Easy", "cyan"))
@@ -150,7 +146,7 @@ class GameMap:
         """
         Generates a new map with the Hunter and Prey
 
-        :returns:    A tuple (hunter coordinates, prey coordinates) with each coordinate containing the corresponding x and y coordinate.
+        :return:    A tuple (hunter coordinates, prey coordinates) with each coordinate containing the corresponding x and y coordinate.
         """
         # Make the very easy difficulty map 
         if difficulty == 1:
@@ -163,7 +159,7 @@ class GameMap:
             M if i == 0 or i == self.size - 1 else T for i in range(self.size)] 
             for i in range(self.size)]
         # Add mountains to the map randomly based on the difficulty chosen
-        number_of_mountains = self.size * (6 - difficulty)
+        number_of_mountains = int(self.size * (6 - difficulty) / 2)
         for i in range(number_of_mountains):
             while (True):
                 x = randint(1, self.size - 1)
@@ -182,7 +178,7 @@ class GameMap:
                 self.game_map[hunter_y][hunter_x] = H
                 break
         dots = 0
-        while True:  # Add the Prey onto the map
+        while True:  # Add the Prey onto the map while showing a 'loading screen'
             os.system('cls' if os.name == 'nt' else 'clear')
             print("Generating new map" + dots * '.')
             sleep(0.5)
@@ -201,7 +197,7 @@ class GameMap:
         """
         Determines if all parts of a game map are reachable from some starting position.
 
-        :returns: A boolean showing wether all parts of the map is reachable
+        :return: A boolean showing wether all parts of the map is reachable
         """
         # convert 2D array to graph
         graph = {}
@@ -239,7 +235,7 @@ class GameMap:
             if neighbor not in visited:
                 self.depth_first_search(neighbor, graph, visited)
 
-    def print_game_state(self, hunter:Hunter):
+    def print_game_state(self, hunter: Hunter, moves: int):
         """
         Print the whole map with the charges left to the screen.
 
@@ -257,6 +253,9 @@ class GameMap:
             print("You " + coloured("are", "red", attrs=["bold"]) + " currently using a charge.")
         else:
             print("You " + coloured("are not", "red", attrs=["bold"]) + " currently using a charge.")
+        print()
+        print("This is your " + coloured(f"{moves}th ", "green") + "move.")
+        cprint("This will not update until you made a valid move!", "red")
 
     def is_mountain(self, x: int, y: int) -> bool:
         """
@@ -265,7 +264,7 @@ class GameMap:
         :param x:   The x coordinate of the target square.
         :param y:   The y coordinate of the target square.
 
-        :returns:   A boolean representing whether the target square is a mountain or not.
+        :return:   A boolean representing whether the target square is a mountain or not.
         """
         return self.game_map[y][x] == M
 
@@ -280,6 +279,100 @@ class GameMap:
         """
         self.game_map[new_y][new_x] = target
         self.game_map[old_y][old_x] = T
+
+
+class Node:
+    def __init__(self, position: tuple, parent: "Node"=None):
+        self.x, self.y = position
+        self.parent = parent
+        self.g = 0  # Cost from start node to current node
+        self.h = 0  # Heuristic estimate of the cost from current node to the goal
+        self.f = 0  # Total cost (g + h)
+
+    def heuristic(self, node: "Node", goal: "Node") -> int:
+        """
+        Calculate the heuristic value (Manhattan distance) between two nodes.
+
+        :param node:    The current node.
+        :param goal:    The goal node.
+        :return:        The heuristic value between the current node and the goal node.
+        """
+        return abs(node.x - goal.x) + abs(node.y - goal.y)
+
+    def is_valid_cell(self, game_map: GameMap, new_x: int, new_y: int) -> bool:
+        """
+        Check if the node's coordinates are within the game map and not blocked by a mountain.
+
+        :param game_map:    The GameMap object.
+        :param new_x:       The new x position.
+        :param new_y:       The new y position.
+
+        :return:            True if the node is a valid cell, False otherwise.
+        """
+        return 0 <= new_x < game_map.size and 0 <= new_y < game_map.size and game_map.game_map[new_y][new_x] != "🗻"
+
+    def get_neighboring_cells(self, game_map: GameMap) -> "list['Node']":
+        """
+        Get the neighboring cells of the current node.
+
+        :param game_map:    The GameMap object.
+
+        :return:            List of neighboring cells.
+        """
+        neighbors = []
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # Down, Up, Right, Left
+        for dx, dy in directions:
+            new_x = self.x + dx
+            new_y = self.y + dy
+            if self.is_valid_cell(game_map, new_x, new_y):
+                neighbors.append(Node((new_x, new_y)))
+        return neighbors
+
+    def reconstruct_path(self, node) -> "list['tuple(int, int)']":
+        """
+        Reconstruct the path from the goal node to the start node.
+
+        :param node:    The current node.
+
+        :return:        The reconstructed path from the start node to the goal node.
+        """
+        path = []
+        while node:
+            path.append((node.x, node.y))
+            node = node.parent
+        return path[::-1]
+
+    def astar(self, game_map: GameMap, goal: "Node") -> "list['tuple(int, int)']":
+        """
+        Perform the A* search algorithm to find a path from the start node to the goal node.
+
+        :param game_map:    The GameMap object.
+        :param goal:        The goal node.
+
+        :return:            The path from the start node to the goal node if a valid path is found, None otherwise.
+        """
+        open_set = [self]  # Nodes to be evaluated
+        closed_set = set()  # Nodes already evaluated
+
+        while open_set:
+            current = min(open_set, key=lambda node: node.f)  # Node with the lowest f score
+            if current.x == goal.x and current.y == goal.y:
+                return self.reconstruct_path(current)  # Path found, return the reconstructed path
+            open_set.remove(current)
+            closed_set.add((current.x, current.y))
+            neighbors = current.get_neighboring_cells(game_map)
+            for neighbor in neighbors:
+                if (neighbor.x, neighbor.y) in closed_set:
+                    continue
+                tentative_g = current.g + 1
+                if neighbor not in open_set or tentative_g < neighbor.g:
+                    neighbor.g = tentative_g
+                    neighbor.h = self.heuristic(neighbor, goal)
+                    neighbor.f = neighbor.g + neighbor.h
+                    neighbor.parent = current
+                    if neighbor not in open_set:
+                        open_set.append(neighbor)
+        return None  # No path found
 
 
 class Animal():
@@ -308,7 +401,7 @@ class Hunter(Animal):
         Toggles between the special move state.
         It will only activate the special move if charge is larger than 0.
 
-        :returns:   A boolean that indicates whether the toggle was successful or not.
+        :return:   A boolean that indicates whether the toggle was successful or not.
         """
         if self.charges <= 0:
             self.speed = 1
@@ -334,30 +427,47 @@ class Prey(Animal):
         self.x = coordinate[0]
         self.y = coordinate[1]
 
-    def make_move(self, game_map: GameMap, hunter_pos:tuple) -> None:
+    def make_move(self, game_map: GameMap, hunter_pos:tuple):
         """
-        The Prey makes a move based on something. If the prey tries to go onto a square with either 
-        a mountain or the hunter, it will miss its chance to move.
+        The Prey makes a move to get as far away as possible from the Hunter
 
-        :param game_map:    The current game map.
+        :param game_map:    The GameMap object.
         :param hunter_pos:  The position of the hunter.
-
-        :returns:           None if the prey is already at the furthest point away from the hunter or 
-                            there is no path to the furthest point
-        TODO it finds the furthest spot but may still go towards the hunter
         """
-
-        furthest = furthest_position(game_map.game_map, hunter_pos, (self.x, self.y))
-        if furthest == (self.x, self.y):
-            return None
-        path = a_star_pathfinding(game_map.game_map, (self.x, self.y), furthest)
-        if path == None:
-            return None
-        next_coordinate = path[1]
-        if game_map.game_map[next_coordinate[1]][next_coordinate[0]] == M:
-            return None
-        game_map.update(self.x, self.y, next_coordinate[0], next_coordinate[1], P)
-        self.set_coordinate(next_coordinate)
+        possible_moves = [(self.x-1, self.y), (self.x+1, self.y), (self.x, self.y-1), (self.x, self.y+1)]
+        distances, trash_moves, trash_distances = [], [], []
+        # Setting up the node for the current prey position and the hunter position
+        current_node = Node((self.x, self.y))
+        hunter_node = Node(hunter_pos)
+        current_distance = len(current_node.astar(game_map, hunter_node))
+        # Remove add the invalid moves to a separate list
+        for i, each in enumerate(possible_moves):
+            if game_map.game_map[each[1]][each[0]] == M or game_map.game_map[each[1]][each[0]] == H:
+                trash_moves.append(each)
+            else:
+                # Calculate the distance between the new position and the hunter
+                start_node = Node((each[0], each[1]))
+                path = start_node.astar(game_map, hunter_node)
+                distances.append(len(path))
+        # Remove the invalid moves from the possible move list
+        for each in trash_moves:
+            possible_moves.remove(each)
+        if len(distances) == 0 or current_distance > max(distances):
+            return # Current position is already the best
+        # Remove the moves that moves the prey closer to the hunter
+        trash_moves = []
+        for i, each in enumerate(distances):
+            if each < max(distances):
+                trash_distances.append(each)
+                trash_moves.append(possible_moves[i])
+        for each in trash_distances:
+            distances.remove(each)
+        for each in trash_moves:
+            possible_moves.remove(each)
+        # Choose the best move randomly if multiple moves result in the same distance
+        best_move = possible_moves[randint(0, len(possible_moves)-1)]
+        game_map.update(self.x, self.y, best_move[0], best_move[1], P)
+        self.set_coordinate(best_move)
 
 
 def main():
@@ -375,11 +485,12 @@ def main():
             hunter = Hunter(h_coordinate)
             prey = Prey(p_coordinate)
 
-            game_map.print_game_state(hunter)
+            game_map.print_game_state(hunter, game.moves)
 
             while not game.game_over:
                 new_move = game.ask_move()
                 new_x, new_y = hunter.x, hunter.y
+                updated = True
                 
                 if (new_move == 'W' 
                     and hunter.y - hunter.speed > 0 and hunter.y - hunter.speed < game_map.size 
@@ -402,8 +513,8 @@ def main():
                         print(coloured("Out of charges!", "red", attrs=["bold"]))
                 else:
                     cprint("Cannot get up the mountain!", "red")
+                    updated = False
 
-                updated = False
                 if new_x != hunter.x or new_y != hunter.y:
                     game_map.update(hunter.x, hunter.y, new_x, new_y, H)
                     hunter.set_coordinate((new_x, new_y))
@@ -413,17 +524,16 @@ def main():
                     if hunter.x == prey.x and hunter.y == prey.y:  # This means that the hunter has caught the prey
                         if not game.end():
                             raise SystemExit
-                        updated = True
+                        updated = False
 
-                if not game.game_over and not updated:
+                if not game.game_over and  updated:
                     if hunter.charges == 0:
                         hunter.speed = 1
                     prey.make_move(game_map, (hunter.x, hunter.y))
                     if hunter.x == prey.x and hunter.y == prey.y:
                         if not game.end():
                             raise SystemExit
-                    game_map.print_game_state(hunter)
-
+                    game_map.print_game_state(hunter, game.moves)
 
 
 if __name__ == "__main__":
