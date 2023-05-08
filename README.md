@@ -3,6 +3,8 @@ This is a game where you play as the Hunter and your goal is to catch the Prey i
 
 This game will be updated sometimes. To see what changed, have a look at the *update_log.txt*.
 
+***Good Luck and have fun!***
+
 ## How to Play
 * Press 'WASD' to move the Hunter around.
 
@@ -23,4 +25,7 @@ This game will be updated sometimes. To see what changed, have a look at the *up
 
 4. Toggling your special move will count as a turn.
 
-***Good Luck and have fun!***
+## Getting Started
+Install the dependencies using pip:
+
+    pip install -r requirements.txt
