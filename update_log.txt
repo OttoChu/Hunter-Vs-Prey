@@ -1,4 +1,9 @@
 --------------------------
+v1.4.2         08/05/2023
+
+- Improved the Rules section
+- Improved the README file
+--------------------------
 v1.4.1         06/05/2023
 
 - Improved AI of Prey 

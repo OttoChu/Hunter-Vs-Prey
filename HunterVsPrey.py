@@ -50,8 +50,17 @@ class Game:
 
     def rules(self):
         """
-        Print all the accepted input onto the screen.
+        Print all the rules onto the screen.
         """
+        print("Rules")
+        print("1. Squares that you can be on are represented as 🌳.")
+        print("2. Squares that you can **NOT** be on are represented as 🗻.")
+        print("3. The Prey is represented as 👨.")
+        print("4. The Hunter is represented as 🦊.")
+        print("5. If an invalid move is made, your total move will be " + coloured("incremented by 1", "red") + "!")
+        print("6. You starts with 10 special moves.")
+        print("7. Toggling your special move will count as a turn.")
+        print()
         print('Here are the accepted inputs:')
         cprint("'W' to move upwards", 'red')
         cprint("'A' to move to the left", 'blue')
@@ -59,11 +68,6 @@ class Game:
         cprint("'D' to move to the right", 'magenta')
         print()
         cprint("'E' to toggle the special move", "green")
-        print()
-        print("Rules")
-        print("1. If an invalid move is made, " + coloured("your total move will be incremented by 1!", "red"))
-        print("2. You starts with 10 special moves.")
-        print("3. Toggling your special move will count as a turn.")
         print()
         cprint("Press anything to return to the homepage.", "black")
         _ = msvcrt.getch()
@@ -199,7 +203,7 @@ class GameMap:
 
         :return: A boolean showing wether all parts of the map is reachable
         """
-        # convert 2D array to graph
+        # Convert 2D array to graph
         graph = {}
         rows, cols = len(self.game_map), len(self.game_map[0])
         for i in range(rows):
@@ -216,9 +220,9 @@ class GameMap:
                         neighbors.append((i, j+1))
                     graph[(i, j)] = neighbors
         
-        # traverse graph to check reachability
+        # Traverse graph to check reachability
         visited = set()
-        start_node = next(iter(graph))  # choose an arbitrary node as starting point
+        start_node = next(iter(graph))  # Choose an arbitrary node as starting point
         self.depth_first_search(start_node, graph, visited)
         return len(visited) == len(graph)
     
@@ -353,7 +357,6 @@ class Node:
         """
         open_set = [self]  # Nodes to be evaluated
         closed_set = set()  # Nodes already evaluated
-
         while open_set:
             current = min(open_set, key=lambda node: node.f)  # Node with the lowest f score
             if current.x == goal.x and current.y == goal.y:
