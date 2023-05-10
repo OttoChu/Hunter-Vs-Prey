@@ -1,4 +1,4 @@
-# Hunter Vs Prey v1.4.1
+# Hunter Vs Prey v1.4.2
 
 from random import randint
 from time import sleep
