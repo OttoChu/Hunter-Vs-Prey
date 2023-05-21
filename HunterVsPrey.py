@@ -11,19 +11,25 @@ T = Tree = "🌳"
 P = Prey = "🦊"
 H = Hunter = "👨"
 M = Mountain = "🗻"
+F = Fog = "⬜"
 
 
 class Game:
+    """
+    The main class that runs the game.
+    """
     def __init__(self):
-        self.game_over = False
-        self.moves = 0
+        """
+        Initialize the game.
+        """
+        self.game_over = False # A boolean that indicates whether the game is over or not.
+        self.moves = 0 # The number of moves the player has made.
     
     def homepage(self) -> int:
         """
-        Print the homepage onto the screen.
-        Ask for input for what to show next.
+        Print the homepage onto the screen. Ask for input for what to show next.
 
-        :return mode:  The mode chosen to show next. (1 for rules, 2 for new game)
+        :return: A number between 1 - 3 representing the chosen option.
         """
         cprint("Welcome to Hunter Vs Prey!", "green", attrs=["bold"])
         print()
@@ -75,9 +81,9 @@ class Game:
 
     def end(self) -> bool:
         """
-        Show the player that they have completed the game and ask if they wanted to play agin.
+        Print the end screen onto the screen. Ask for input for whether to play again.
 
-        :return: A boolean that indicates whether the player wants to play again or not.
+        :return: A boolean that indicates whether the player wants to play again.
         """
         self.game_over = True
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -102,9 +108,9 @@ class Game:
 
     def ask_difficulty(self) -> int:
         """
-        Ask the user to choose the game difficult.
-
-        :return difficulty:    A number between 1(easiest) - 5(hardest) representing the chosen difficulty.
+        Ask the user for the game difficulty.
+        
+        :return: A number between 1 - 5 representing the chosen difficulty.
         """
         print("Game difficulties:")
         print(coloured("1. ", "black") + coloured("Extra Easy", "cyan"))
@@ -127,8 +133,7 @@ class Game:
             
     def ask_move(self) -> str:
         """
-        Ask the user for a new move. 
-        Will keep asking unless unless "WASD" or "E" (special move key) is entered.
+        Ask the user for the next move.
         """
         while True:
             move = msvcrt.getch()
@@ -144,16 +149,22 @@ class Game:
 
 class GameMap:
     def __init__(self, size: int):
+        """
+        Initialize the game map.
+
+        :param size:    The size of the map.
+        """
         self.size = size
 
     def setup_map(self, difficulty: int) -> tuple:
         """
-        Generates a new map with the Hunter and Prey
+        Generates a new map with the Hunter and Prey.
 
-        :return:    A tuple (hunter coordinates, prey coordinates) with each coordinate containing the corresponding x and y coordinate.
+        :param difficulty:  A number between 1(easiest) - 5(hardest) representing the chosen difficulty.
+
+        :return: A tuple of the coordinates of the Hunter and Prey.
         """
-        # Make the very easy difficulty map 
-        if difficulty == 1:
+        if difficulty == 1: # Extra Easy
             self.game_map = [[M for _ in range(self.size)] for _ in range(self.size)]
             self.game_map[1][1] = H
             self.game_map[1][2] = P
@@ -174,7 +185,6 @@ class GameMap:
                         break
                     else:
                         self.game_map[y][x] = T
-
         while True:  # Add the Hunter onto the map
             hunter_x = randint(1, self.size - 1)
             hunter_y = randint(1, self.size - 1)
@@ -182,7 +192,7 @@ class GameMap:
                 self.game_map[hunter_y][hunter_x] = H
                 break
         dots = 0
-        while True:  # Add the Prey onto the map while showing a 'loading screen'
+        while True:  # Add the Prey onto the map while showing a "loading screen"
             os.system('cls' if os.name == 'nt' else 'clear')
             print("Generating new map" + dots * '.')
             sleep(0.5)
@@ -199,9 +209,9 @@ class GameMap:
     
     def is_map_reachable(self):
         """
-        Determines if all parts of a game map are reachable from some starting position.
+        Check if the map is reachable.
 
-        :return: A boolean showing wether all parts of the map is reachable
+        :return: True if the map is reachable, False otherwise.
         """
         # Convert 2D array to graph
         graph = {}
@@ -219,7 +229,6 @@ class GameMap:
                     if j < cols-1 and self.game_map[i][j+1] != M:
                         neighbors.append((i, j+1))
                     graph[(i, j)] = neighbors
-        
         # Traverse graph to check reachability
         visited = set()
         start_node = next(iter(graph))  # Choose an arbitrary node as starting point
@@ -228,24 +237,32 @@ class GameMap:
     
     def depth_first_search(self, node: tuple, graph: dict, visited: set):
         """
-        Traverses a graph depth-first, starting from the given node, and marks all visited nodes.
-        
-        :param node:    A tuple representing the starting node.
-        :param graph:   A dictionary that maps each node to a list of its neighboring nodes.
-        :param visited: A set of nodes that have already been visited.
+        Traverse the graph using depth-first search.
+
+        :param node:        The current node.
+        :param graph:       The graph to traverse.
+        :param visited:     A set of visited nodes.
+
+        :return: A set of visited nodes.
         """
-        visited.add(node)
-        for neighbor in graph[node]:
+        visited.add(node) # Mark the current node as visited
+        for neighbor in graph[node]: # Recursively visit all unvisited neighbors
             if neighbor not in visited:
                 self.depth_first_search(neighbor, graph, visited)
 
-    def print_game_state(self, hunter: Hunter, moves: int):
+    def print_game_state(self, hunter: Hunter, moves: int, fog: bool = False):
         """
-        Print the whole map with the charges left to the screen.
+        Print the map with the charges left to the screen.
+        If fog is enabled, only the 5x5 area around the Hunter is shown.
 
         :param hunter:  The current Hunter instance.
+        :param moves:   The number of moves the Hunter has made.
+        :param fog:     A boolean showing wether the fog of war is enabled.
         """
         os.system('cls' if os.name == 'nt' else 'clear')
+        if fog:
+            # TODO: Implement fog of war
+            pass
         for each_row in self.game_map:
             line = ""
             for each_item in each_row:
@@ -263,65 +280,76 @@ class GameMap:
 
     def is_mountain(self, x: int, y: int) -> bool:
         """
-        Checks whether the target square is a mountain or not.
+        Check if the target square is a mountain.
 
         :param x:   The x coordinate of the target square.
         :param y:   The y coordinate of the target square.
 
-        :return:   A boolean representing whether the target square is a mountain or not.
+        :return:    A boolean representing whether the target square is a mountain or not.
         """
         return self.game_map[y][x] == M
 
     def update(self, old_x: int, old_y: int, new_x: int, new_y: int, target: str):
         """
-        Update the game map with the new move.
+        Update the map with the new position of the Hunter.
 
-        :param old_x:   The x coordinate of old the target square.
-        :param old_y:   The y coordinate of old the target square.
-        :param new_x:   The x coordinate of new the target square.
-        :param new_y:   The y coordinate of new the target square.
+        :param old_x:   The old x coordinate of the Hunter.
+        :param old_y:   The old y coordinate of the Hunter.
+        :param new_x:   The new x coordinate of the Hunter.
+        :param new_y:   The new y coordinate of the Hunter.
+        :param target:  The target square to move to.
         """
         self.game_map[new_y][new_x] = target
         self.game_map[old_y][old_x] = T
 
 
 class Node:
+    """
+    A class representing a node in the A* algorithm.
+    """
     def __init__(self, position: tuple, parent: "Node"=None):
-        self.x, self.y = position
-        self.parent = parent
+        """
+        Initialize a new Node instance.
+
+        :param position:    The position of the node.
+        :param parent:      The parent node of the node.
+        """
+        self.x, self.y = position # Coordinates of the node
+        self.parent = parent # Parent node of the node
         self.g = 0  # Cost from start node to current node
         self.h = 0  # Heuristic estimate of the cost from current node to the goal
         self.f = 0  # Total cost (g + h)
 
     def heuristic(self, node: "Node", goal: "Node") -> int:
         """
-        Calculate the heuristic value (Manhattan distance) between two nodes.
+        Calculate the heuristic value of the node. The heuristic value is the Manhattan distance between the node and the goal.
 
         :param node:    The current node.
         :param goal:    The goal node.
-        :return:        The heuristic value between the current node and the goal node.
+
+        :return:        The heuristic value of the node.
         """
         return abs(node.x - goal.x) + abs(node.y - goal.y)
 
     def is_valid_cell(self, game_map: GameMap, new_x: int, new_y: int) -> bool:
         """
-        Check if the node's coordinates are within the game map and not blocked by a mountain.
+        Check if the target square is a valid square. A square is valid if it is within the bounds of the map and is not a mountain.
 
         :param game_map:    The GameMap object.
-        :param new_x:       The new x position.
-        :param new_y:       The new y position.
+        :param new_x:       The x coordinate of the target square.
+        :param new_y:       The y coordinate of the target square.
 
-        :return:            True if the node is a valid cell, False otherwise.
+        :return:            A boolean representing whether the target square is a valid square or not.
         """
         return 0 <= new_x < game_map.size and 0 <= new_y < game_map.size and game_map.game_map[new_y][new_x] != "🗻"
 
     def get_neighboring_cells(self, game_map: GameMap) -> "list['Node']":
         """
-        Get the neighboring cells of the current node.
+        Get the neighboring cells of the current node. 
 
         :param game_map:    The GameMap object.
 
-        :return:            List of neighboring cells.
+        :return:            A list of neighboring cells.
         """
         neighbors = []
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # Down, Up, Right, Left
@@ -334,13 +362,13 @@ class Node:
 
     def reconstruct_path(self, node) -> "list['tuple(int, int)']":
         """
-        Reconstruct the path from the goal node to the start node.
+        Reconstruct the path from the start node to the goal node.
 
-        :param node:    The current node.
+        :param node:    The goal node.
 
-        :return:        The reconstructed path from the start node to the goal node.
+        :return:        The path from the start node to the goal node.
         """
-        path = []
+        path = [] # Path from the start node to the goal node
         while node:
             path.append((node.x, node.y))
             node = node.parent
@@ -379,32 +407,48 @@ class Node:
 
 
 class Animal():
+    """
+    A class representing an animal.
+    """
     def __init__(self, x: int, y: int):
+        """
+        Initialize a new Animal instance.
+        
+        :param x:   The x coordinate of the animal.
+        :param y:   The y coordinate of the animal.
+        """
         self.x = x
         self.y = y
-        self.speed = 1
+        self.speed = 1 # The speed of the animal
 
 
 class Hunter(Animal):
+    """
+    A class representing a hunter.
+    """
     def __init__(self, coordinate: tuple):
-        self.charges = 10 
+        """
+        Initialize a new Hunter instance.
+
+        :param coordinate:  The coordinate of the hunter.
+        """
+        self.charges = 10 # The number of special charges the hunter has
         super().__init__(coordinate[0], coordinate[1])
 
     def set_coordinate(self, coordinate: tuple):
         """
-        Updates the coordinates for the hunter.
+        Store a new coordinate for the hunter.
 
-        :param coordinate: The new coordinate for the hunter.
+        :param coordinate:  The new coordinate for the hunter.
         """
         self.x = coordinate[0]
         self.y = coordinate[1]
 
     def toggle(self) -> bool:
         """
-        Toggles between the special move state.
-        It will only activate the special move if charge is larger than 0.
+        Toggle the speed of the hunter.
 
-        :return:   A boolean that indicates whether the toggle was successful or not.
+        :return:    A boolean representing whether the speed of the hunter is toggled or not.
         """
         if self.charges <= 0:
             self.speed = 1
@@ -417,7 +461,16 @@ class Hunter(Animal):
 
 
 class Prey(Animal):
+    """
+    A class representing a prey.
+    """
     def __init__(self, coordinate: tuple):
+        """
+        Initialize a new Prey instance.
+
+        :param coordinate:  The coordinate of the prey.
+        
+        """
         self.breathing = True
         super().__init__(coordinate[0], coordinate[1])
 
@@ -432,13 +485,15 @@ class Prey(Animal):
 
     def make_move(self, game_map: GameMap, hunter_pos:tuple):
         """
-        The Prey makes a move to get as far away as possible from the Hunter
+        Make a move for the prey.
 
         :param game_map:    The GameMap object.
         :param hunter_pos:  The position of the hunter.
+
+        :return:            The new position of the prey.
         """
         possible_moves = [(self.x-1, self.y), (self.x+1, self.y), (self.x, self.y-1), (self.x, self.y+1)]
-        distances, trash_moves, trash_distances = [], [], []
+        distances, trash_moves, trash_distances = [], [], [] # Lists to store the distances and invalid moves
         # Setting up the node for the current prey position and the hunter position
         current_node = Node((self.x, self.y))
         hunter_node = Node(hunter_pos)
