@@ -3,6 +3,11 @@ This is a game where you play as the Hunter and your goal is to catch the Prey i
 
 This game will be updated sometimes. To see what changed, have a look at the *update_log.txt*.
 
+## Getting Started
+Install the dependencies using following command:
+
+    pip install -r requirements.txt
+
 ***Good Luck and have fun!***
 
 ## How to Play
@@ -24,8 +29,3 @@ This game will be updated sometimes. To see what changed, have a look at the *up
 3. You starts with 10 special moves.
 
 4. Toggling your special move will count as a turn.
-
-## Getting Started
-Install the dependencies using pip:
-
-    pip install -r requirements.txt
