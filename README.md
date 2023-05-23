@@ -6,7 +6,7 @@ This game will be updated sometimes. To see what changed, have a look at the *up
 ## Getting Started
 Install the dependencies using following command:
 
-    pip install -r requirements.txt
+    pip install -r ./dep/requirements.txt
 
 ***Good Luck and have fun!***
 
