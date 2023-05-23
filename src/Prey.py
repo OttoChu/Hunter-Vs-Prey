@@ -71,3 +71,18 @@ class Prey(Animal):
         best_move = possible_moves[randint(0, len(possible_moves)-1)]
         game_map.update(self.x, self.y, best_move[0], best_move[1], P)
         self.set_coordinate(best_move)
+
+    def markov_decision(self, game_map: GameMap, hunter_pos: tuple) -> None:
+        """
+        Make a move for the prey using the Markov Decision Process. 
+        The prey will move to the position with the highest probability of survival.
+        It will also take into account the position of the hunter and future states.
+        If it get cornered, it will move to the position with the lowest probability of death.
+
+        :param game_map:    The GameMap object.
+        :param hunter_pos:  The position of the hunter.
+
+        :return:            The new position of the prey.
+        """
+        # TODO: Implement the Markov Decision Process
+        pass
