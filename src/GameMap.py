@@ -15,7 +15,6 @@ class GameMap:
         :param size:    The size of the map.
         """
         self.size = size
-        self.fog = None
 
     def setup_map(self, difficulty: int) -> tuple:
         """
@@ -111,7 +110,7 @@ class GameMap:
             if neighbor not in visited:
                 self.depth_first_search(neighbor, graph, visited)
 
-    def print_game_state(self, hunter_position: tuple, hunter_speed: int, charges_left: int, moves: int) -> None:
+    def print_game_state(self, hunter_position: tuple, hunter_speed: int, charges_left: int, moves: int, fog_of_war: bool) -> None:
         """
         Print the map with the charges left to the screen.
         If fog is enabled, only the 5x5 area around the Hunter is shown.
@@ -120,25 +119,26 @@ class GameMap:
         :param hunter_speed:    The speed of the Hunter.
         :param charges_left:    The number of charges left.
         :param moves:           The number of moves the Hunter has made.
+        :param fog_of_war:      Whether to enable fog of war or not.
         """
         os.system('cls' if os.name == 'nt' else 'clear')
-        if self.fog:
-            # Print the 5x5 area around the Hunter to the screen, other tiles will be replaced by F
+        if fog_of_war:
+            # Print the 5x5 area around the Hunter to the screen, other tiles will be replaced by fog
             hunter_x, hunter_y = hunter_position
             for y in range(self.size):
-                line = []
+                line = ""
                 for x in range(self.size):
                     if abs(x - hunter_x) <= 2 and abs(y - hunter_y) <= 2:
-                        line.append(self.game_map[y][x])
+                        line += self.game_map[y][x]
                     else:
-                        line.append(F + ' ')
-                print(' '.join(line))
+                        line += F + ' '
+                print(line)
         else:
             # Print the whole map to the screen
             for each_row in self.game_map:
                 line = ""
                 for each_item in each_row:
-                    line += each_item + ' '
+                    line += each_item 
                 print(line)
         print()
         print("You have " + coloured(str(charges_left), "red", attrs=["bold"]) + " charge(s) left!")
@@ -173,19 +173,3 @@ class GameMap:
         """
         self.game_map[new_y][new_x] = target
         self.game_map[old_y][old_x] = T
-
-    def setup_fog(self) -> None:
-        """
-        Setup the fog of war game mode by asking the user for input.
-        """
-        game_mode = msvcrt.getch()
-        try:
-            game_mode = int(game_mode.decode("utf-8"))
-            if game_mode > 0 and game_mode <= 2:
-                # TODO: Add a way to toggle fog of war
-                self.fog = True if game_mode == 1 else False
-                os.system('cls' if os.name == 'nt' else 'clear')
-                return None
-        except (UnicodeDecodeError, ValueError):
-            pass
-        cprint("Invalid input!", "red")
