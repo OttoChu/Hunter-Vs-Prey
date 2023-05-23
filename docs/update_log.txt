@@ -1,16 +1,25 @@
---------------------------
-v1.4.2         08/05/2023
+-------------------------------------------------------------------------------------------------------
+v1.5.0          DATE
+
+- Added new game mode (Fog of War)
+    - The hunter can only see the 5 square around them when activated
+    - Other squares will be covered by fog
+- Added a new Setting page where you can change the difficulty and game mode
+- Improved code readability by separating the code into different files
+- Improved the README file
+-------------------------------------------------------------------------------------------------------
+v1.4.2          08/05/2023
 
 - Improved the Rules section
 - Improved the README file
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.4.1         06/05/2023
 
 - Improved AI of Prey 
     - Will now try to go as far as possible from the Hunter
 - Added the ability to see how many moves you have made
---------------------------
-v1.4.0         04/05/2023
+-------------------------------------------------------------------------------------------------------
+v1.4.0          04/05/2023
 
 - Added special move for the hunter
     - Press 'E' to move 2 square in the same direction in the same turn (can hop over walls)
@@ -21,39 +30,39 @@ v1.4.0         04/05/2023
 - Improved code quality
 - Improved performance of the game
 - Fixed a typo in the update log
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.3.2          23/06/2021
 
 - Improved very hard mode
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.3.1          29/04/2021
 
 - Improved the replay feature
 - Added extra easy mode
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.3.0          27/04/2021
 
 - Added a replay feature
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.2.1          26/04/2021
 
 - Fixed a bug where the prey can use the square with mountains
 - Changed the player inputs
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.2.0          21/04/2021
 
 - Added mountains that prevent players from using that square
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.1.1          16/04/2021
 
 - Fixed a bug where the prey can go off the map and replace the hunter's position
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.1.0          15/03/2021
 
 - Changed the player inputs
 - Prey now have a chance of moving after each go
---------------------------
+-------------------------------------------------------------------------------------------------------
 v1.0.0          16/12/2020
 
 - Hunter Vs Prey is released
---------------------------
+-------------------------------------------------------------------------------------------------------

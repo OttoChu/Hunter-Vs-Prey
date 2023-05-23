@@ -12,21 +12,20 @@ class Game:
         """
         self.game_over = False # A boolean that indicates whether the game is over or not.
         self.moves = 0 # The number of moves the player has made.
+        self.difficulty = 3 # A number between 1(easiest) - 5(hardest) representing the chosen difficulty. Default is 3.
+        self.fog_of_war = False # A boolean that indicates whether the fog of war is on or not.
     
     def homepage(self) -> int:
         """
         Print the homepage onto the screen. Ask for input for what to show next.
 
-        :return: A number between 1 - 3 representing the chosen option.
+        :return: The option chosen by the user.
         """
         cprint("Welcome to Hunter Vs Prey!", "green", attrs=["bold"])
         print()
-        cprint("How to win?", "blue")
-        cprint("The goal of this game is to get the hunter to the prey.", "blue")
-        print()
-        print(coloured("1. ", "black") + coloured("Rules", "yellow"))
-        print(coloured("2. ", "black") + coloured("Toggle Game Modes", "yellow"))
-        print(coloured("3. ", "black") + coloured("New Game", "yellow"))
+        print(coloured("1. ", "black") + coloured("New Game", "yellow"))
+        print(coloured("2. ", "black") + coloured("Rules", "yellow"))
+        print(coloured("3. ", "black") + coloured("Settings", "yellow"))
         print(coloured("4. ", "black") + coloured("Quit", "yellow"))
         print()
         while True:
@@ -35,9 +34,6 @@ class Game:
                 option = int(option.decode("utf-8"))
                 if option >= 1 and option <= 4:
                     os.system('cls' if os.name == 'nt' else 'clear')
-                    if option == 4:
-                        print("Thank you for playing!")
-                        raise SystemExit
                     return option
             except (UnicodeDecodeError, ValueError):
                 pass
@@ -47,26 +43,110 @@ class Game:
         """
         Print all the rules onto the screen.
         """
-        print("Rules")
-        print("1. Squares that you can be on are represented as 🌳.")
-        print("2. Squares that you can **NOT** be on are represented as 🗻.")
-        print("3. The Prey is represented as 👨.")
-        print("4. The Hunter is represented as 🦊.")
-        print("5. If an invalid move is made, your total move will be " + coloured("incremented by 1", "red") + "!")
-        print("6. You starts with 10 special moves.")
-        print("7. Toggling your special move will count as a turn.")
+        cprint("Rules", "green", attrs=["bold"])
         print()
-        print('Here are the accepted inputs:')
-        cprint("'W' to move upwards", 'red')
-        cprint("'A' to move to the left", 'blue')
-        cprint("'S' to move downwards", 'yellow')
-        cprint("'D' to move to the right", 'magenta')
+        print(coloured("1. ", "black") + coloured("The Prey is represented as 🦊", "yellow"))
+        print(coloured("2. ", "black") + coloured("The Hunter is represented as 👨", "yellow"))
+        print(coloured("3. ", "black") + coloured("Both the Hunter and Prey can move 2 squares at a time.", "yellow"))
+        print(coloured("4. ", "black") + coloured("The squares that you can be on are represented as 🌳", "yellow"))
+        print(coloured("5. ", "black") + coloured("The squares that you can NOT be on are represented as 🗻", "yellow"))
+        print(coloured("6. ", "black") + coloured("If an invalid move is made, your total moves count will be incremented by 1!", "yellow"))
+        print(coloured("7. ", "black") + coloured("You start with 10 special moves.", "yellow"))
+        print(coloured("8. ", "black") + coloured("Toggling your special move will count as a turn.", "yellow"))
         print()
-        cprint("'E' to toggle the special move", "green")
+        print("Here are the accepted inputs:")
+        print(coloured("W ", "black") + coloured("to move upwards", "yellow"))
+        print(coloured("A ", "black") + coloured("to move to the left", "yellow"))
+        print(coloured("S ", "black") + coloured("to move downwards", "yellow"))
+        print(coloured("D ", "black") + coloured("to move to the right", "yellow"))
+        print()
+        print(coloured("E ", "black") + coloured("to toggle the special move", "yellow"))
+        print()
+        print("The goal of the game is the catch the Prey in the least number of moves!")
         print()
         cprint("Press anything to return to the homepage.", "black")
         _ = msvcrt.getch()
         os.system('cls' if os.name == 'nt' else 'clear')
+
+    def settings(self) -> int:
+        """
+        Print all the settings onto the screen.
+
+        :return:    An integer representing the option chosen. 1 for difficulty, 2 for fog of war, 3 for back.
+        """
+        cprint("Settings", "green", attrs=["bold"])
+        print()
+        print(coloured("1. ", "black") + coloured("Difficulty", "yellow"))
+        print(coloured("2. ", "black") + coloured("Fog of War", "yellow"))
+        print(coloured("3. ", "black") + coloured("Back", "yellow"))
+        print()
+        while True:
+            option = msvcrt.getch()
+            try:
+                option = int(option.decode("utf-8"))
+                if option >= 1 and option <= 3:
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    return option
+            except (UnicodeDecodeError, ValueError):
+                pass
+            cprint("Invalid input!", "red")
+
+    def choose_difficulty(self) -> int:
+        """
+        Print the difficulty screen onto the screen. Ask for input for what difficulty to choose.
+
+        :return:    An integer representing the difficulty chosen. 1 for extra easy, 2 for easy, 3 for normal, 4 for hard, 5 for extra hard, 6 for back.
+        """
+        cprint("Difficulty", "green", attrs=["bold"])
+        print()
+        print(coloured("1. ", "black") + coloured("Extra Easy", "yellow"))
+        print(coloured("2. ", "black") + coloured("Easy", "yellow"))
+        print(coloured("3. ", "black") + coloured("Normal", "yellow"))
+        print(coloured("4. ", "black") + coloured("Hard", "yellow"))
+        print(coloured("5. ", "black") + coloured("Extra Hard", "yellow"))
+        print(coloured("6. ", "black") + coloured("Back", "yellow"))
+        print()
+        difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD"]
+        cprint(f"Current difficulty: {difficulties[self.difficulty - 1]}", "blue")
+        print()
+        while True:
+            option = msvcrt.getch()
+            try:
+                option = int(option.decode("utf-8"))
+                if option >= 1 and option <= 6:
+                    if option < 6:
+                        self.difficulty = option
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    return option
+            except (UnicodeDecodeError, ValueError):
+                pass
+            cprint("Invalid input!", "red")
+
+    def choose_fog_of_war(self) -> int:
+        """
+        Print the fog of war screen onto the screen. Ask for input for whether to turn on the fog of war.
+
+        :return:    An integer representing the option chosen. 1 for yes, 2 for no, 3 for back.
+        """
+        cprint("Fog of War", "green", attrs=["bold"])
+        print()
+        print(coloured("1. ", "black") + coloured("On", "yellow"))
+        print(coloured("2. ", "black") + coloured("Off", "yellow"))
+        print(coloured("3. ", "black") + coloured("Back", "yellow"))
+        print()
+        cprint(f"Current fog of war: {'ON' if self.fog_of_war else 'OFF'}", "blue")
+        while True:
+            option = msvcrt.getch()
+            try:
+                option = int(option.decode("utf-8"))
+                if option >= 1 and option <= 3:
+                    if option < 3:
+                        self.fog_of_war = True if option == 1 else False
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    return option
+            except (UnicodeDecodeError, ValueError):
+                pass
+            cprint("Invalid input!", "red")
 
     def end(self) -> bool:
         """
@@ -93,33 +173,30 @@ class Game:
                     return False
             except UnicodeDecodeError:
                 pass
-            cprint("Wrong input! Try again!", "red")
-
-    def ask_difficulty(self) -> int:
+            cprint("Invalid input!", "red")
+            
+    def ask_fog_of_war(self) -> bool:
         """
-        Ask the user for the game difficulty.
+        Ask the user for the fog of war setting.
         
-        :return: A number between 1 - 5 representing the chosen difficulty.
+        :return: A boolean that indicates whether the fog of war is enabled.
         """
-        print("Game difficulties:")
-        print(coloured("1. ", "black") + coloured("Extra Easy", "cyan"))
-        print(coloured("2. ", "black") + coloured("Easy", "light_blue"))
-        print(coloured("3. ", "black") + coloured("Normal", "light_yellow"))
-        print(coloured("4. ", "black") + coloured("Hard", "light_red"))
-        print(coloured("5. ", "black") + coloured("Extra Hard", "light_magenta"))
+        print("Fog of war:")
+        print(coloured("1. ", "black") + coloured("Enabled", "green"))
+        print(coloured("2. ", "black") + coloured("Disabled", "red"))
         print()
-        print("Please enter game difficulty:")
+        print("Please enter fog of war setting:")
         while True:
-            difficulty = msvcrt.getch()
+            fog_of_war = msvcrt.getch()
             try:
-                difficulty = int(difficulty.decode("utf-8"))
-                if difficulty > 0 and difficulty <= 5:
+                fog_of_war = int(fog_of_war.decode("utf-8"))
+                if fog_of_war == 1 or fog_of_war == 2:
                     os.system('cls' if os.name == 'nt' else 'clear')
-                    return difficulty
+                    return True if fog_of_war == 1 else False
             except (UnicodeDecodeError, ValueError):
                 pass
             cprint("Invalid input!", "red")
-            
+
     def ask_move(self) -> str:
         """
         Ask the user for the next move.
@@ -133,4 +210,4 @@ class Game:
                     return move
             except UnicodeDecodeError:
                 pass
-            cprint("Wrong input! Try again!", "red")
+            cprint("Invalid input!", "red")
