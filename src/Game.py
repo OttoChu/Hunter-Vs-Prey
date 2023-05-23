@@ -47,7 +47,7 @@ class Game:
         print()
         print(coloured("1. ", "black") + coloured("The Prey is represented as 🦊", "yellow"))
         print(coloured("2. ", "black") + coloured("The Hunter is represented as 👨", "yellow"))
-        print(coloured("3. ", "black") + coloured("Both the Hunter and Prey can move 2 squares at a time.", "yellow"))
+        print(coloured("3. ", "black") + coloured("Both the Hunter and Prey can move 1 square at a time.", "yellow"))
         print(coloured("4. ", "black") + coloured("The squares that you can be on are represented as 🌳", "yellow"))
         print(coloured("5. ", "black") + coloured("The squares that you can NOT be on are represented as 🗻", "yellow"))
         print(coloured("6. ", "black") + coloured("If an invalid move is made, your total moves count will be incremented by 1!", "yellow"))
