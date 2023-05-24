@@ -16,18 +16,18 @@ Install the dependencies using following command:
 * Press 'E' to toggle the special move.
 
 ## Rules
-1. The Prey is represented as 🦊.
+1. Squares that you can be on are represented as 🌳.
 
-2. The Hunter is represented as 👨.
+2. Squares that you can **NOT** be on are represented as 🗻.
 
-3. Both the Hunter and Prey can move 1 square at a time..
+3. The Prey is represented as 👨.
 
-4. The squares that you can be on are represented as 🌳.
+4. The Hunter is represented as 🦊.
 
-5. The squares that you can NOT be on are represented as 🗻.
+5. If an invalid move is made, your total move will be incremented by **1**.
 
-6. If an invalid move is made, your total moves count will be incremented by 1!
+6. You starts with 10 special moves.
 
-7. "You start with 10 special moves
+7. "You start with 10 special moves.
 
 8. Toggling your special move will count as a turn.
