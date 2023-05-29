@@ -1,6 +1,6 @@
 from random import randint
 
-from Animal import Animal
+from Animals.Animal import Animal
 from GameMap import *
 from Node import Node
 from Tiles import *
@@ -18,15 +18,6 @@ class Prey(Animal):
         """
         self.breathing = True
         super().__init__(coordinate[0], coordinate[1])
-
-    def set_coordinate(self, coordinate: tuple):
-        """
-        Store a new coordinate for the prey.
-
-        :param coordinate:  The new coordinate for the prey.
-        """
-        self.x = coordinate[0]
-        self.y = coordinate[1]
 
     def make_move(self, game_map: GameMap, hunter_pos:tuple):
         """

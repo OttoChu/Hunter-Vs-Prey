@@ -1,5 +1,17 @@
 -------------------------------------------------------------------------------------------------------
-v1.5.0          DATE
+v1.6.0          29/05/2023
+
+- Added new Hunter ability (Time Stopper)
+    - When the ability is activated, time stops for 3 turns
+    - During this time, the prey cannot move
+    - The ability can only be used 5 times per game
+- Added an ability page under the setting page
+    - You can change the chosen ability here
+- Fixed a bug where the move count is not reset between games
+- Improved the code quality by separating the code into different folders
+- Added a new section in the README file (future updates)
+-------------------------------------------------------------------------------------------------------
+v1.5.0          24/05/2023
 
 - Added new game mode (Fog of War)
     - The hunter can only see the 5 square around them when activated

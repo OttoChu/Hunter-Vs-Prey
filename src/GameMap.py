@@ -1,4 +1,3 @@
-import msvcrt
 from random import randint
 from time import sleep
 from termcolor import cprint, colored as coloured
@@ -20,7 +19,7 @@ class GameMap:
         """
         Generates a new map with the Hunter and Prey.
 
-        :param difficulty:  A number between 1(easiest) - 5(hardest) representing the chosen difficulty.
+        :param difficulty:  A number between 1(easiest) - 6(hardest) representing the chosen difficulty.
 
         :return: A tuple of the coordinates of the Hunter and Prey.
         """
@@ -29,10 +28,12 @@ class GameMap:
             self.game_map[1][1] = H
             self.game_map[1][2] = P
             return ((1,1), (2,1))
+        
         # Fill get the border of the map with mountains
         self.game_map = [[M for _ in range(self.size)] if i == 0 or i == self.size - 1 else [
             M if i == 0 or i == self.size - 1 else T for i in range(self.size)] 
             for i in range(self.size)]
+            
         # Add mountains to the map randomly based on the difficulty chosen
         number_of_mountains = int(self.size * (6 - difficulty)*2)
         for i in range(number_of_mountains):
@@ -51,6 +52,7 @@ class GameMap:
             if self.game_map[hunter_y][hunter_x] != M:
                 self.game_map[hunter_y][hunter_x] = H
                 break
+
         dots = 0
         while True:  # Add the Prey onto the map while showing a "loading screen"
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -95,7 +97,7 @@ class GameMap:
         self.depth_first_search(start_node, graph, visited)
         return len(visited) == len(graph)
     
-    def depth_first_search(self, node: tuple, graph: dict, visited: set):
+    def depth_first_search(self, node: tuple, graph: dict, visited: set) -> set:
         """
         Traverse the graph using depth-first search.
 
@@ -110,16 +112,23 @@ class GameMap:
             if neighbor not in visited:
                 self.depth_first_search(neighbor, graph, visited)
 
-    def print_game_state(self, hunter_position: tuple, hunter_speed: int, charges_left: int, moves: int, fog_of_war: bool) -> None:
+    def print_game_state(self, hunter_position: tuple, special: bool, charges_left: int,
+                         moves: int, fog_of_war: bool, moves_left: int, ability_name: str, 
+                         charge_error: bool = False, mountain_error: bool= False, input_error: bool = False) -> None:
         """
         Print the map with the charges left to the screen.
-        If fog is enabled, only the 5x5 area around the Hunter is shown.
+        If Fog of War is enabled, only the 5x5 area around the Hunter is shown.
 
         :param hunter_position: The position of the Hunter.
         :param hunter_speed:    The speed of the Hunter.
         :param charges_left:    The number of charges left.
         :param moves:           The number of moves the Hunter has made.
         :param fog_of_war:      Whether to enable fog of war or not.
+        :param moves_left:      The number of moves the Hunter has left on the current turn.
+        :param ability_name:    The name of the Hunter's ability.
+        :param charge_error:    Whether the Hunter tried to use a charge when they had none left.
+        :param mountain_error:  Whether the Hunter tried to move into a mountain.
+        :param input_error:     Whether the Hunter entered an invalid input.
         """
         os.system('cls' if os.name == 'nt' else 'clear')
         if fog_of_war:
@@ -141,14 +150,22 @@ class GameMap:
                     line += each_item 
                 print(line)
         print()
+        # TODO: Change the ability name to the actual name
+        print("Your special ability is " + coloured(f"{ability_name}", "yellow") + "!")
         print("You have " + coloured(str(charges_left), "red", attrs=["bold"]) + " charge(s) left!")
-        if hunter_speed == 2:
+        if special:
             print("You " + coloured("are", "red", attrs=["bold"]) + " currently using a charge.")
-        else:
-            print("You " + coloured("are not", "red", attrs=["bold"]) + " currently using a charge.")
+        print("You have " + coloured(str(moves_left), "green") + " move(s) left on this turn!")
+
         print()
         print("This is your " + coloured(f"{moves}th ", "green") + "move.")
-        cprint("This will not update until you made a valid move!", "red")
+        print()
+        if charge_error:
+            cprint("Out of charges!", "red", attrs=["bold"])
+        if mountain_error:
+            cprint("Cannot move into a mountain!", "red", attrs=["bold"])
+        if input_error:
+            cprint("Invalid input!", "red", attrs=["bold"])
 
     def is_mountain(self, x: int, y: int) -> bool:
         """
