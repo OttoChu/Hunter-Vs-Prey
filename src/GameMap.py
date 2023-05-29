@@ -97,7 +97,7 @@ class GameMap:
         self.depth_first_search(start_node, graph, visited)
         return len(visited) == len(graph)
     
-    def depth_first_search(self, node: tuple, graph: dict, visited: set):
+    def depth_first_search(self, node: tuple, graph: dict, visited: set) -> set:
         """
         Traverse the graph using depth-first search.
 
@@ -113,8 +113,8 @@ class GameMap:
                 self.depth_first_search(neighbor, graph, visited)
 
     def print_game_state(self, hunter_position: tuple, special: bool, charges_left: int,
-                         moves: int, fog_of_war: bool, moves_left: int = 0, charge_error: bool = False,
-                        mountain_error: bool= False, input_error: bool = False)-> None:
+                         moves: int, fog_of_war: bool, moves_left: int, ability_name: str, 
+                         charge_error: bool = False, mountain_error: bool= False, input_error: bool = False) -> None:
         """
         Print the map with the charges left to the screen.
         If Fog of War is enabled, only the 5x5 area around the Hunter is shown.
@@ -125,7 +125,8 @@ class GameMap:
         :param moves:           The number of moves the Hunter has made.
         :param fog_of_war:      Whether to enable fog of war or not.
         :param moves_left:      The number of moves the Hunter has left on the current turn.
-        :param charge_error:    Whether the Hunter tried to use a charge when it has ran out of charges.
+        :param ability_name:    The name of the Hunter's ability.
+        :param charge_error:    Whether the Hunter tried to use a charge when they had none left.
         :param mountain_error:  Whether the Hunter tried to move into a mountain.
         :param input_error:     Whether the Hunter entered an invalid input.
         """
@@ -150,16 +151,14 @@ class GameMap:
                 print(line)
         print()
         # TODO: Change the ability name to the actual name
-        print("Your special ability is " + coloured("Hunter Speed", "red", attrs=["bold"]) + "!")
+        print("Your special ability is " + coloured(f"{ability_name}", "yellow") + "!")
         print("You have " + coloured(str(charges_left), "red", attrs=["bold"]) + " charge(s) left!")
         if special:
             print("You " + coloured("are", "red", attrs=["bold"]) + " currently using a charge.")
-            print("You have " + coloured(str(moves_left), "green") + " move(s) left on this turn!")
-        else:
-            print("You " + coloured("are not", "red", attrs=["bold"]) + " currently using a charge.")
+        print("You have " + coloured(str(moves_left), "green") + " move(s) left on this turn!")
+
         print()
         print("This is your " + coloured(f"{moves}th ", "green") + "move.")
-        cprint("This will not update until you made a valid move!", "yellow")
         print()
         if charge_error:
             cprint("Out of charges!", "red", attrs=["bold"])

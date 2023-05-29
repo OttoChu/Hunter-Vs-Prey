@@ -6,13 +6,14 @@ class Game:
     """
     The main class that runs the game.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize the game.
         """
         self.game_over = False # A boolean that indicates whether the game is over or not.
         self.moves = 0 # The number of moves the player has made.
         self.difficulty = 3 # A number between 1(easiest) - 6(hardest) representing the chosen difficulty. Default is 3.
+        self.abilities = 1 # A number representing the chosen abilities. Default is 1.
         self.fog_of_war = False # A boolean that indicates whether the fog of war is on or not.
     
     def homepage(self) -> int:
@@ -73,19 +74,20 @@ class Game:
         """
         Print all the settings onto the screen.
 
-        :return:    An integer representing the option chosen. 1 for difficulty, 2 for fog of war, 3 for back.
+        :return:    An integer representing the option chosen. 1 for difficulty, 2 for fog of war, 3 for special abilities, 4 for back.
         """
         cprint("Settings", "green", attrs=["bold"])
         print()
         print(coloured("1. ", "black") + coloured("Difficulty", "yellow"))
         print(coloured("2. ", "black") + coloured("Fog of War", "yellow"))
-        print(coloured("3. ", "black") + coloured("Back", "yellow"))
+        print(coloured("3. ", "black") + coloured("Special Ability", "yellow"))
+        print(coloured("4. ", "black") + coloured("Back", "yellow"))
         print()
         while True:
             option = msvcrt.getch()
             try:
                 option = int(option.decode("utf-8"))
-                if option >= 1 and option <= 3:
+                if option >= 1 and option <= 4:
                     os.system('cls' if os.name == 'nt' else 'clear')
                     return option
             except (UnicodeDecodeError, ValueError):
@@ -115,7 +117,7 @@ class Game:
             option = msvcrt.getch()
             try:
                 option = int(option.decode("utf-8"))
-                if option >= 1 and option <= 6:
+                if option >= 1 and option <= 7:
                     if option < 6:
                         self.difficulty = option
                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -150,6 +152,39 @@ class Game:
                 pass
             cprint("Invalid input!", "red")
 
+    def choose_special_ability(self) -> int:
+        """
+        Print the special ability screen onto the screen. Ask for input for special ability to use.
+
+        :return:    An integer representing the option chosen. 1 for Jumper, 2 for Time Stopper, 3 for back.
+        """
+        cprint("Special Ability", "green", attrs=["bold"])
+        print()
+        print(coloured("1. ", "black") + coloured("Jumper", "yellow"))
+        print("\t Allows you to move 2 tiles at once.")
+        print("\t This includes moving over mountains.")
+        print("\t You can only use this ability " + coloured("10 ", "red") + "times per game.")
+        print(coloured("2. ", "black") + coloured("Time Stopper", "yellow"))
+        print("\t Allows you to stop time for 3 turns.")
+        print("\t During this time, the Prey will not move.")
+        print("\t You can only use this ability " + coloured("5 ", "red") + "times per game.")
+        print(coloured("3. ", "black") + coloured("Back", "yellow"))
+        print()
+        abilities = ["JUMPER", "TIME STOPPER"]
+        cprint(f"Current chosen special ability: {abilities[self.abilities - 1]}", "blue")
+        while True:
+            option = msvcrt.getch()
+            try:
+                option = int(option.decode("utf-8"))
+                if option >= 1 and option <= 3:
+                    if option < 3:
+                        self.special_abilities = option
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    return option
+            except (UnicodeDecodeError, ValueError):
+                pass
+            cprint("Invalid input!", "red")
+
     def end(self) -> bool:
         """
         Print the end screen onto the screen. Ask for input for whether to play again.
@@ -160,7 +195,7 @@ class Game:
         os.system('cls' if os.name == 'nt' else 'clear')
         cprint("The hunter has eaten the prey!", "green", "on_red")
         cprint(" __     ______  _    _  __          _______ _   _   _ \n \ \   / / __ \| |  | | \ \        / /_   _| \ | | | |\n  \ \_/ / |  | | |  | |  \ \  /\  / /  | | |  \| | | |\n   \   /| |  | | |  | |   \ \/  \/ /   | | | . ` | | |\n    | | | |__| | |__| |    \  /\  /   _| |_| |\  | |_|\n    |_|  \____/ \____/      \/  \/   |_____|_| \_| (_)\n", "red")
-        print(f"You caught the prey in {self.moves} moves")
+        print(f"You caught the prey in {self.moves} moves.")
         print("Play again? (Y/N)")
         print()
         while True:
@@ -213,3 +248,10 @@ class Game:
             except UnicodeDecodeError:
                 pass
             return "INVALID"
+        
+    def reset(self) -> None:
+        """
+        Reset the game state.
+        """
+        self.game_over = False
+        self.moves = 0        
