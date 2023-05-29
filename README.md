@@ -30,8 +30,6 @@ Install the dependencies using following command:
 
 7. "You start with 10 special moves.
 
-8. Toggling your special move will count as a turn.
-
 # Future Updates
 
 1. Add a GUI (using pygame?)
