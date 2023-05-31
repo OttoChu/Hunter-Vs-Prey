@@ -1,4 +1,4 @@
-# Hunter Vs Prey v1.5.0
+# Hunter Vs Prey v1.6.0
 
 import os
 
