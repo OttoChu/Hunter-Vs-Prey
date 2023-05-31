@@ -150,7 +150,6 @@ class GameMap:
                     line += each_item 
                 print(line)
         print()
-        # TODO: Change the ability name to the actual name
         print("Your special ability is " + coloured(f"{ability_name}", "yellow") + "!")
         print("You have " + coloured(str(charges_left), "red", attrs=["bold"]) + " charge(s) left!")
         if special:
@@ -178,7 +177,7 @@ class GameMap:
         """
         return self.game_map[y][x] == M
 
-    def update(self, old_x: int, old_y: int, new_x: int, new_y: int, target: str):
+    def update(self, old_x: int, old_y: int, new_x: int, new_y: int, target: str) -> None:
         """
         Update the map with the new position of the Hunter.
 

@@ -37,8 +37,8 @@ Install the dependencies using following command:
 2. Different types of prey (with different special moves)
 
 3. More types of hunter ability
-    - Teleporter
-        - teleport to any tile on the map (except the wall)
+    - Teleporter (TODO: part of the game now? wink wink)
+        - teleport to any tile on the map (except the wall) 
     - Baiter
         - place a bait in a 5x5 area next to the Hunter on the map (except the wall)
         - the bait should be able to attract the prey to it

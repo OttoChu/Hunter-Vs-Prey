@@ -5,7 +5,6 @@ class Hunter(Animal):
     """
     A class representing a hunter.
     """
-    # TODO: Add a special power attribute to the hunter. This is just temporary!
     def __init__(self, coordinate: tuple, special_ability: int) -> None:
         """
         Initialize a new Hunter instance.
@@ -17,6 +16,7 @@ class Hunter(Animal):
         abilities = ["Jumper", "Time Stopper", "Teleporter", "Baiter", "Spotter"]
         self.special_ability = abilities[special_ability - 1]
         self.special_status = False
+        # Set the charges for different special abilities
         if self.special_ability == "Jumper":
             self.charges = 10
         elif self.special_ability == "Time Stopper":
@@ -62,5 +62,17 @@ class Hunter(Animal):
                 self.moves_on_turn = 3
             else:
                 self.moves_on_turn = 1
+
+        elif self.special_ability == "Teleporter":
+            # teleport the hunter to a random location on the map
+            pass
         
         return True
+    
+    def get_position(self) -> tuple:
+        """
+        Get the position of the hunter.
+
+        :return:    A tuple representing the position of the hunter.
+        """
+        return self.x, self.y

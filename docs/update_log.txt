@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------------------------------
+v1.6.1          TODO
+
+- Added new Hunter ability (Teleporter)
+    - When the ability is activated, the hunter can choose a square to teleport to
+    - The teleportation area is limited to the 8x8 area around the Hunter
+    - The ability can only be used once per game
+- Removed unnecessary code
+-------------------------------------------------------------------------------------------------------
 v1.6.0          29/05/2023
 
 - Added new Hunter ability (Time Stopper)
