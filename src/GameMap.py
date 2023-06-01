@@ -5,7 +5,6 @@ import os
 
 from Tiles import *
 
-
 class GameMap:
     def __init__(self, size: int):
         """

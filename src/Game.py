@@ -1,6 +1,5 @@
 import msvcrt
 import os
-from time import sleep
 from termcolor import cprint, colored as coloured
 
 from Tiles import *
