@@ -1,4 +1,4 @@
-# Hunter Vs Prey v1.6.0
+# Hunter Vs Prey v1.6.1
 
 import os
 
@@ -28,8 +28,7 @@ def main() -> None:
                             break
                 elif setting_option == 3:
                     while True:
-                        # TODO: change the number when teleporter is added
-                        if game.choose_special_ability() == 3:
+                        if game.choose_special_ability() == 4:
                             break
                 elif setting_option == 4:
                     break

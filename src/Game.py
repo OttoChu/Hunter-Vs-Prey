@@ -16,7 +16,7 @@ class Game:
         self.game_over = False # A boolean that indicates whether the game is over or not.
         self.moves = 0 # The number of moves the player has made.
         self.difficulty = 3 # A number between 1(easiest) - 6(hardest) representing the chosen difficulty. Default is 3.
-        self.abilities = 3 # A number representing the chosen abilities. Default is 1.
+        self.abilities = 1 # A number representing the chosen abilities. Default is 1.
         self.fog_of_war = False # A boolean that indicates whether the fog of war is on or not.
     
     def homepage(self) -> int:
@@ -55,9 +55,7 @@ class Game:
         print(coloured("4. ", "black") + coloured("The squares that you can be on are represented as 🌳.", "yellow"))
         print(coloured("5. ", "black") + coloured("The squares that you can NOT be on are represented as 🗻.", "yellow"))
         print(coloured("6. ", "black") + coloured("Invalid move will increment your total moves by 1!", "yellow"))
-        print(coloured("7. ", "black") + coloured("You start with 10 special ability charges.", "yellow"))
-        print(coloured("8. ", "black") + coloured("Invalid move will remove 1 charge.", "yellow"))
-        print(coloured("8. ", "black") + coloured("Toggling your special move will count as a turn.", "yellow"))
+        print(coloured("7. ", "black") + coloured("Toggling your special move will count as a turn.", "yellow"))
         print()
         print("Here are the accepted inputs:")
         print(coloured("W ", "blue") + coloured("to move up.", "yellow"))
@@ -68,8 +66,7 @@ class Game:
         cprint("Any other input will be considered invalid!", "red", attrs=["bold"])
         print()
         print("The goal of the game is the catch the Prey in the least number of moves!")
-        print()
-        cprint("Press anything to return to the homepage.", "black")
+        self.print_press_to_continue()
         _ = msvcrt.getch()
         os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -121,7 +118,7 @@ class Game:
             try:
                 option = int(option.decode("utf-8"))
                 if option >= 1 and option <= 7:
-                    if option < 6:
+                    if option < 7:
                         self.difficulty = option
                     os.system('cls' if os.name == 'nt' else 'clear')
                     return option
@@ -171,19 +168,22 @@ class Game:
         print("\t Allows you to stop time for 3 turns.")
         print("\t During this time, the Prey will not move.")
         print("\t You can only use this ability " + coloured("5 ", "red") + "times per game.")
-        # TODO: Add the Teleporter ability and the description for it.
-        print(coloured("3. ", "black") + coloured("Back", "yellow"))
+        print(coloured("3. ", "black") + coloured("Teleporter", "yellow"))
+        print("\t Allows you to teleport to a tile on the map.")
+        print("\t This is only the 8x8 area around the Hunter.")
+        print(f"\t You can only teleport to a {T} tile.")
+        print("\t You can only use this ability " + coloured("once ", "red") + "per game.")
+        print(coloured("4. ", "black") + coloured("Back", "yellow"))
         print()
-        abilities = ["JUMPER", "TIME STOPPER"]
+        abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER"]
         cprint(f"Current chosen special ability: {abilities[self.abilities - 1]}", "blue")
         while True:
             option = msvcrt.getch()
             try:
                 option = int(option.decode("utf-8"))
-                # TODO: Change this to 4 when Teleporter is added.
-                if option >= 1 and option <= 3:
-                    if option < 3:
-                        self.special_abilities = option
+                if option >= 1 and option <= 4:
+                    if option < 4:
+                        self.abilities = option
                     os.system('cls' if os.name == 'nt' else 'clear')
                     return option
             except (UnicodeDecodeError, ValueError):
@@ -217,6 +217,74 @@ class Game:
                 pass
             cprint("Invalid input!", "red")
             
+    def find_teleport_map(self, game_map: list, hunter_position: tuple) -> list:
+        """
+        Find the teleport map for the Teleporter ability.
+
+        :param game_map:        The game map.
+        :param hunter_position: The position of the Hunter.
+
+        :return:                A list of strings representing the teleport map.
+        """
+        valid_locations = []
+        hunter_x, hunter_y = hunter_position
+        # Get the 8x8 area around the Hunter.
+        for y in range(hunter_y - 4, hunter_y + 5):
+            line = ""
+            if 0 < y < len(game_map):
+                for x in range(hunter_x - 4, hunter_x + 5):
+                    if 0 < x < len(game_map):
+                        line += game_map[y][x]
+                    else:
+                        line += M
+            else:
+                line = M * 9
+            valid_locations.append(line)
+        return valid_locations
+    
+    def print_press_to_continue(self) -> None:
+        """
+        Print the press to continue screen onto the screen.
+        """
+        print()
+        cprint("Press any key to continue...", "black")
+        msvcrt.getch()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    def print_teleport_location(self, teleport_map: list, chosen_x: int = 0, chosen_y: int = 0) -> None:
+        """
+        Print the valid teleport locations onto the screen and show the rules for teleporting.
+        It will also highlight the chosen row, column and square (if chosen).
+
+        :param teleport_map:    A list of strings that represents the teleport map.
+        :param chosen_x:        An integer that represents the chosen x coordinate.
+        :param chosen_y:        An integer that represents the chosen y coordinate.
+        """
+        if chosen_x != 0 and chosen_y != 0: # show chosen square
+            teleport_map[chosen_y - 1] = teleport_map[chosen_y - 1][:chosen_x - 1] + S + teleport_map[chosen_y - 1][chosen_x:]
+        show_x = ""      
+        if chosen_x != 0: # show the chosen column
+            show_x = "    " + "  " * (chosen_x - 1) + Y
+            print(show_x)
+        else: 
+            print()
+        y_num = "     "
+        for i in range(len(teleport_map)):
+            y_num += str(i + 1) +' '
+        print(y_num)
+        for i, each in enumerate(teleport_map):
+            if i == chosen_y - 1:
+                print(Y + ' ' + str(i + 1) + each + Y)
+            else:
+                print("   " + str(i + 1) + each)
+        print(show_x)
+        print()
+        if chosen_x == 0 or chosen_y == 0:
+            print(f"You can only teleport to {T}")
+            print(f"Canceling or teleporting to {M} or {P} or {F} " + coloured("WILL", "red") +  " still use up a charge.")
+            print("Press " + coloured('Q', "green") + " to cancel.")
+            print()
+        
     def ask_move(self) -> str:
         """
         Ask the user for the next move.
@@ -231,7 +299,7 @@ class Game:
             except UnicodeDecodeError:
                 pass
             return "INVALID"
-        
+
     def ask_teleport_location(self, game_map: list, hunter_position: tuple) -> tuple:
         """
         Allow the user to choose where to teleport to.
@@ -243,73 +311,49 @@ class Game:
 
         :return: A tuple representing the new position of the Hunter.
         """
-        valid_locations = []
-        hunter_x, hunter_y = hunter_position
-        for y in range(hunter_y - 4, hunter_y + 5):
-            line = ""
-            if 0 < y < len(game_map):
-                
-                for x in range(hunter_x - 4, hunter_x + 5):
-                    if 0 < x < len(game_map):
-                        line += game_map[y][x]
-                    else:
-                        line += M
-            else:
-                line = M * 9
-            valid_locations.append(line)
-        # TODO: Tidy up the print statements.
-        print("Choose a location to teleport to:")
-        print()
-        y_num = "  "
-        for i in range(len(valid_locations)):
-            y_num += str(i + 1) +' '
-        print(y_num)
-        for i, each in enumerate(valid_locations):
-            print(str(i + 1) + each)
-        print()
-        print("Press the number of the location to teleport to.")
-        print(f"You can only teleport to {T}")
-        print(f"Canceling or teleporting to {M} or {P} or {F} " + coloured("WILL", "red") +  " still use up a charge.")
-        print("Press " + coloured('Q', "green") + " to cancel.")
-        print()
-        
-        # TODO: Provide the visual of the chosen location. When the column(x) is chosen, the chosen column should be highlighted.
-        # This can be an orange square emoji🟧/yellow square🟨.
-        # When the row(y) is chosen, the chosen square will be highlighted.
-        # After that, the user will be ask to confirm the location.
-        # If the user confirms, the teleportation will go through.
-        # If the user cancels, do nothing and remove 1 charge.
-
+        os.system('cls' if os.name == 'nt' else 'clear')
+        valid_locations = self.find_teleport_map(game_map, hunter_position)
+        self.print_teleport_location(valid_locations)
+        print("Choose the column number to teleport to:")
         while True:
             x_pos = msvcrt.getch()
             try:
                 x_pos = x_pos.decode("utf-8").upper()
                 if x_pos == "Q": # Cancel
+                    os.system('cls' if os.name == 'nt' else 'clear')
                     return hunter_position, False
                 elif int(x_pos) > 0 and int(x_pos) <= len(valid_locations):
-                    print(f"You have chosen the {x_pos} column.")
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    self.print_teleport_location(valid_locations, int(x_pos))
+                    print("You have chosen the " + coloured(f"{x_pos}th", "yellow") + " column.")
+                    print()
+                    print("Choose the row number to teleport to:")
                     while True:
                         y_pos = msvcrt.getch()
+                        os.system('cls' if os.name == 'nt' else 'clear')
                         try:
                             y_pos = y_pos.decode("utf-8").upper()
                             if y_pos == "Q": # Cancel
                                 return hunter_position, False
                             elif int(y_pos) > 0 and int(y_pos) <= len(valid_locations):
-                                if valid_locations[int(y_pos) - 1][int(x_pos) - 1] != T :
+                                if valid_locations[int(y_pos) - 1][int(x_pos) - 1] != T : # invalid location
+                                    print("Unable to teleport to your chosen location.")
+                                    print("You will " + coloured("not", "red") + " be teleported but a charge will still be used.")
+                                    self.print_press_to_continue()
                                     return hunter_position, False
-                                else:
-                                    print(f"You have chosen the {y_pos} row.")
-                                    print((hunter_x - 5 + int(x_pos), hunter_y - 5 + int(y_pos)))
-                                    sleep(2)
-
-                                    return (hunter_x - 5 + int(x_pos), hunter_y - 5 + int(y_pos)), True
+                                else: # valid location
+                                    self.print_teleport_location(valid_locations, int(x_pos), int(y_pos))
+                                    print("You have chosen the " + coloured(f"{y_pos}th", "yellow") + " row.")
+                                    print(f"You will teleport to the square marked by a {S}.")
+                                    self.print_press_to_continue()
+                                    return (hunter_position[0] - 5 + int(x_pos), hunter_position[1] - 5 + int(y_pos)), True
                         except (UnicodeDecodeError, ValueError):
                             pass
                         cprint("Invalid input!", "red")
             except (UnicodeDecodeError, ValueError):
                 pass
             cprint("Invalid input!", "red")
-        
+
     def reset(self) -> None:
         """
         Reset the game state.

@@ -1,11 +1,13 @@
 -------------------------------------------------------------------------------------------------------
-v1.6.1          TODO
+v1.6.1          01/06/2023
 
 - Added new Hunter ability (Teleporter)
     - When the ability is activated, the hunter can choose a square to teleport to
     - The teleportation area is limited to the 8x8 area around the Hunter
     - The ability can only be used once per game
+- Fixed a bug where the Impossible difficulty is not able to be chosen
 - Removed unnecessary code
+- Improved the README file
 -------------------------------------------------------------------------------------------------------
 v1.6.0          29/05/2023
 
