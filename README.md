@@ -73,7 +73,9 @@ You can choose between the following special abilities under the settings menu.
 
 2. Different types of prey (with different special moves)
 
-3. More types of hunter ability
+3. Better AI for the prey (need to be less demanding to increase map size)
+
+4. More types of hunter ability
     - Baiter
         - place a bait in a 5x5 area next to the Hunter on the map (except the wall)
         - the bait should be able to attract the prey to it

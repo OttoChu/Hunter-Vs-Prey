@@ -13,7 +13,7 @@ class Hunter(Animal):
         :param special_ability: The special ability of the hunter.
         """
         super().__init__(coordinate[0], coordinate[1])
-        abilities = ["Jumper", "Time Stopper", "Teleporter", "Baiter", "Spotter"]
+        abilities = ["Jumper", "Time Stopper", "Teleporter", "Baiter", "Spotter", "Shooter"]
         self.special_ability = abilities[special_ability - 1]
         self.special_status = False
         # Set the charges for different special abilities
@@ -65,14 +65,18 @@ class Hunter(Animal):
 
         elif self.special_ability == "Teleporter":
             # teleport the hunter to a random location on the map
-            pass
+            self.charges -= 1
+        
+        elif self.special_ability == "Baiter":
+            raise NotImplementedError
+        
+        elif self.special_ability == "Spotter":
+            # show 10x10 area instead of 5x5 in fog of war
+            # TODO: implement this
+            
+            raise NotImplementedError
+        
+        elif self.special_ability == "Shooter":
+            raise NotImplementedError
         
         return True
-    
-    def get_position(self) -> tuple:
-        """
-        Get the position of the hunter.
-
-        :return:    A tuple representing the position of the hunter.
-        """
-        return self.x, self.y

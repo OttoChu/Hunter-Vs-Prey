@@ -1,4 +1,4 @@
-# Hunter Vs Prey v1.6.1
+# Hunter Vs Prey v1.6.2
 
 import os
 
@@ -37,8 +37,8 @@ def main() -> None:
         else:
             # Start a new game
             game_map = GameMap(15)
-            h_coordinate, p_coordinate = game_map.setup_map(game.difficulty)
-            hunter = Hunter(h_coordinate, game.abilities)
+            h_coordinate, p_coordinate = game_map.setup_map(game.chosen_difficulty)
+            hunter = Hunter(h_coordinate, game.chosen_ability)
             prey = Prey(p_coordinate)
             game_map.print_game_state(hunter.get_position(), hunter.special_status, hunter.charges, 1, game.fog_of_war, 
                                       hunter.moves_on_turn, hunter.special_ability)
@@ -62,12 +62,14 @@ def main() -> None:
                         if hunter.special_status:
                             activate = True
                             if hunter.special_ability == "Teleporter": # teleporting the hunter
-                                hunter.charges -= 1 # using up a charge
                                 new_pos, change = game.ask_teleport_location(game_map.game_map, hunter.get_position())
                                 if change: # only update the hunter position if the user did not cancel the teleport
                                     game_map.update(hunter.x, hunter.y, new_pos[0], new_pos[1], H)
                                     hunter.set_coordinate(new_pos)
                                     break
+                            elif hunter.special_ability == "Spotter":
+                                # TODO: Implement Spotter ability
+                                raise NotImplementedError
                         else:
                             if hunter.special_ability == "Time Stopper": # turning off the ability before using all the moves
                                 hunter.charges -= 1
@@ -102,7 +104,7 @@ def main() -> None:
                     # Print the game state if the game is not over
                     if not game.game_over:
                         # Calculate the number of moves left on the turn
-                        if hunter.special_ability == 'Time stopper':
+                        if hunter.special_ability == 'Time Stopper':
                             if hunter.special_status:
                                 if activate:
                                     moves_left_calculation = 3
@@ -129,7 +131,7 @@ def main() -> None:
                     game_map.print_game_state(hunter.get_position(), hunter.special_status, hunter.charges, game.moves, 
                                                   game.fog_of_war, moves_left_calculation, hunter.special_ability,
                                                   charge_error, mountain_error, input_error)
-                    
+
             # The game is over      
             if game.game_over:
                 if not game.end():

@@ -22,3 +22,11 @@ class Animal():
         """
         self.x = coordinate[0]
         self.y = coordinate[1]
+    
+    def get_position(self) -> tuple:
+        """
+        Return the position of the animal.
+
+        :return:    The position of the animal.
+        """
+        return self.x, self.y
