@@ -13,7 +13,7 @@ class Hunter(Animal):
         :param special_ability: The special ability of the hunter.
         """
         super().__init__(coordinate[0], coordinate[1])
-        abilities = ["Jumper", "Time Stopper", "Teleporter", "Baiter", "Spotter", "Shooter"]
+        abilities = ["Jumper", "Time Stopper", "Teleporter", "Spotter", "Baiter", "Shooter"]
         self.special_ability = abilities[special_ability - 1]
         self.special_status = False
         # Set the charges for different special abilities

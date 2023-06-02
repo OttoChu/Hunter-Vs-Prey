@@ -85,9 +85,6 @@ You can choose between the following special abilities under the settings menu.
         - place a bait in a 5x5 area next to the Hunter on the map (except the wall)
         - the bait should be able to attract the prey to it
         - (only if the prey is close enough (distance to do set later))
-    - Spotter
-        - This should only be useable in fog of war mode
-        - reveal a 10x10 area around the hunter instead of the normal 5x5
     - Shooter
         - shoot a bullet in a straight line in any direction
         - the bullet should be able to kill the prey if it hits it (ending game if the bullet hits the prey)

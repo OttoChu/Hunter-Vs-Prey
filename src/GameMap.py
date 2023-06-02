@@ -140,6 +140,7 @@ class GameMap:
                     else:
                         line += F + ' '
                 print(line)
+        print()
 
     def print_state_description(self, special: bool, charges_left: int,
             moves: int, moves_left: int, ability_name: str, charge_error: bool = False, 
