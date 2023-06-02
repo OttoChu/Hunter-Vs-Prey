@@ -65,6 +65,11 @@ You can choose between the following special abilities under the settings menu.
     - You can only teleport to a 🌳 tile.
     - This ability can be used once per game.
 
+- Spotter
+    - Reveal a 11x11 area around the Hunter instead of the normal 5x5.
+    - This ability can be used 3 times per game.
+    - This ability can only be used in Fog of War mode. (If Fog of War is off, this ability will turn Fog of War **ON**)
+
 *More special abilities (e.g. Baiter, Spotter, Shooter) will be added in the future. Stay Tune!*
 
 # Future Updates

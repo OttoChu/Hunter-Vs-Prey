@@ -9,6 +9,7 @@ v1.6.2          TODO
 - Changed the map size to 15x15
 - Fixed a bug where you need to press a key twice to return to the main menu from the rules page
 - Fixed a bug where moves left on the current turn is not showing the correct number when Time Stopper is on
+- Improved the code quality by separating function for showing the game map into 2 functions
 - Updated the README file
 -------------------------------------------------------------------------------------------------------
 v1.6.1          01/06/2023

@@ -18,7 +18,9 @@ class Game:
         self.all_difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"] # A list of all the difficulties.
         self.all_abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER", "BAITER", "SPOTTER", "SHOOTER"] # A list of all the abilities.
         self.chosen_difficulty = 3 # A number representing the chosen difficulty. Default is 3.
-        self.chosen_ability = 2 # A number representing the chosen ability. Default is 1.
+        
+        # TODO: Change this back to 1 (This is currently 5 for testing purposes)
+        self.chosen_ability = 5 # A number representing the chosen ability. Default is 1.
     
     def homepage(self) -> int:
         """
@@ -171,6 +173,7 @@ class Game:
         print(f"\t You can only teleport to a {T} tile.")
         print("\t You can only use this ability " + coloured("once ", "red") + "per game.")
         # TODO: Add the Spotter ability + description
+        # Also need to turn on fog of war for when this is chosen
         
         print(coloured("4. ", "black") + coloured("Back", "yellow"))
         print()

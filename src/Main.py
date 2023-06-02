@@ -40,8 +40,9 @@ def main() -> None:
             h_coordinate, p_coordinate = game_map.setup_map(game.chosen_difficulty)
             hunter = Hunter(h_coordinate, game.chosen_ability)
             prey = Prey(p_coordinate)
-            game_map.print_game_state(hunter.get_position(), hunter.special_status, hunter.charges, 1, game.fog_of_war, 
-                                      hunter.moves_on_turn, hunter.special_ability)
+            game_map.print_game_map(hunter.get_position(), game.fog_of_war, hunter.special_ability, hunter.special_status)
+            game_map.print_state_description(hunter.special_status, hunter.charges, 1, 1,
+                hunter.special_ability)
 
             while not game.game_over: # Main game loop
                 if hunter.moves_on_turn == 1:
@@ -62,16 +63,14 @@ def main() -> None:
                         if hunter.special_status:
                             activate = True
                             if hunter.special_ability == "Teleporter": # teleporting the hunter
+                                hunter.charges -= 1
                                 new_pos, change = game.ask_teleport_location(game_map.game_map, hunter.get_position())
                                 if change: # only update the hunter position if the user did not cancel the teleport
                                     game_map.update(hunter.x, hunter.y, new_pos[0], new_pos[1], H)
                                     hunter.set_coordinate(new_pos)
                                     break
-                            elif hunter.special_ability == "Spotter":
-                                # TODO: Implement Spotter ability
-                                raise NotImplementedError
                         else:
-                            if hunter.special_ability == "Time Stopper": # turning off the ability before using all the moves
+                            if hunter.special_ability == "Time Stopper" or hunter.special_ability == "Spotter": # turning off the ability before using all the moves
                                 hunter.charges -= 1
                             break
                     else:
@@ -113,24 +112,24 @@ def main() -> None:
                                     moves_left_calculation = 1 if temp_calculation == 0 else temp_calculation
                             else:
                                 moves_left_calculation = 1
-                        game_map.print_game_state(hunter.get_position(), hunter.special_status, hunter.charges, game.moves, 
-                                                  game.fog_of_war, moves_left_calculation, hunter.special_ability,
-                                                  charge_error, mountain_error, input_error)
+                        game_map.print_game_map(hunter.get_position(), game.fog_of_war, hunter.special_ability, hunter.special_status)
+                        game_map.print_state_description(hunter.special_status, hunter.charges, game.moves, 
+                            moves_left_calculation, hunter.special_ability, charge_error, mountain_error, input_error)
 
                 # Prey's turn
                 if not game.game_over:
                     # Continuing the special ability
                     if hunter.special_status and not activate: 
-                        if hunter.special_ability == 'Time Stopper':
+                        if hunter.special_ability == 'Time Stopper' or hunter.special_ability == 'Spotter':
                             hunter.toggle_special_move()
                         hunter.charges -= 1
                     # Resetting the special ability when the charges run out
                     if hunter.charges <= 0:
                         hunter.default_settings()
                     prey.make_move(game_map, hunter.get_position()) # The prey makes a move
-                    game_map.print_game_state(hunter.get_position(), hunter.special_status, hunter.charges, game.moves, 
-                                                  game.fog_of_war, moves_left_calculation, hunter.special_ability,
-                                                  charge_error, mountain_error, input_error)
+                    game_map.print_game_map(hunter.get_position(), game.fog_of_war, hunter.special_ability, hunter.special_status)
+                    game_map.print_state_description(hunter.special_status, hunter.charges, game.moves, 
+                        moves_left_calculation, hunter.special_ability, charge_error, mountain_error, input_error)
 
             # The game is over      
             if game.game_over:

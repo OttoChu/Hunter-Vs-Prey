@@ -26,7 +26,9 @@ class Hunter(Animal):
         elif self.special_ability == "Baiter":
             self.charges = 3
         elif self.special_ability == "Spotter":
-            self.charges = 2
+            self.charges = 3
+        elif self.special_ability == "Shooter":
+            self.charges = 1
         
     def default_settings(self) -> None:
         """
@@ -39,7 +41,7 @@ class Hunter(Animal):
 
     def toggle_special_move(self) -> bool:
         """
-        Toggle the special power of the hunter.
+        Toggle the special power of the hunter. Also changes the corresponding settings of the hunter.
 
         :return:    True if the special power is toggled on, False otherwise.
         """
@@ -65,7 +67,7 @@ class Hunter(Animal):
 
         elif self.special_ability == "Teleporter":
             # teleport the hunter to a random location on the map
-            self.charges -= 1
+            pass
         
         elif self.special_ability == "Baiter":
             raise NotImplementedError
@@ -73,8 +75,8 @@ class Hunter(Animal):
         elif self.special_ability == "Spotter":
             # show 10x10 area instead of 5x5 in fog of war
             # TODO: implement this
-            
-            raise NotImplementedError
+            pass
+
         
         elif self.special_ability == "Shooter":
             raise NotImplementedError

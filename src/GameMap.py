@@ -112,53 +112,59 @@ class GameMap:
             if neighbor not in visited:
                 self.depth_first_search(neighbor, graph, visited)
 
-    def print_game_state(self, hunter_position: tuple, special: bool, charges_left: int,
-                         moves: int, fog_of_war: bool, moves_left: int, ability_name: str, 
-                         charge_error: bool = False, mountain_error: bool= False, input_error: bool = False) -> None:
+    def print_game_map(self, hunter_position: tuple, fog: bool, ability_name: str, ability_status: bool) -> None:
         """
-        Print the map with the charges left to the screen.
-        If Fog of War is enabled, only the 5x5 area around the Hunter is shown.
+        Print the map to the screen.
 
         :param hunter_position: The position of the Hunter.
-        :param hunter_speed:    The speed of the Hunter.
+        :param fog:             Whether the fog of war is enabled or not.
+        :param ability_name:    The name of the Hunter's ability.
+        :param ability_status:  Whether the Hunter is currently using their ability or not.
+        """
+        # Print the whole map to the screen
+        os.system('cls' if os.name == 'nt' else 'clear')
+        if not fog:
+            for each_row in self.game_map:
+                line = ""
+                for each_item in each_row:
+                    line += each_item 
+                print(line)
+        else:
+            visibility = 5 if ability_status and ability_name == "Spotter" else 2
+            hunter_x, hunter_y = hunter_position
+            for y in range(self.size):
+                line = ""
+                for x in range(self.size):
+                    if abs(x - hunter_x) <= visibility and abs(y - hunter_y) <= visibility:
+                        line += self.game_map[y][x]
+                    else:
+                        line += F + ' '
+                print(line)
+
+    def print_state_description(self, special: bool, charges_left: int,
+            moves: int, moves_left: int, ability_name: str, charge_error: bool = False, 
+            mountain_error: bool= False, input_error: bool = False) -> None:
+        """
+        Print the state description to the screen.
+
+        :param special:         Whether the Hunter is currently using a special ability.
         :param charges_left:    The number of charges left.
         :param moves:           The number of moves the Hunter has made.
-        :param fog_of_war:      Whether to enable fog of war or not.
         :param moves_left:      The number of moves the Hunter has left on the current turn.
         :param ability_name:    The name of the Hunter's ability.
         :param charge_error:    Whether the Hunter tried to use a charge when they had none left.
         :param mountain_error:  Whether the Hunter tried to move into a mountain.
         :param input_error:     Whether the Hunter entered an invalid input.
         """
-        os.system('cls' if os.name == 'nt' else 'clear')
-        if fog_of_war:
-            # Print the 5x5 area around the Hunter to the screen, other tiles will be replaced by fog
-            hunter_x, hunter_y = hunter_position
-            for y in range(self.size):
-                line = ""
-                for x in range(self.size):
-                    if abs(x - hunter_x) <= 2 and abs(y - hunter_y) <= 2:
-                        line += self.game_map[y][x]
-                    else:
-                        line += F + ' '
-                print(line)
-        else:
-            # Print the whole map to the screen
-            for each_row in self.game_map:
-                line = ""
-                for each_item in each_row:
-                    line += each_item 
-                print(line)
-        print()
         print("Your special ability is " + coloured(f"{ability_name}", "yellow") + "!")
         print("You have " + coloured(str(charges_left), "red", attrs=["bold"]) + " charge(s) left!")
         if special:
             print("You " + coloured("are", "red", attrs=["bold"]) + " currently using a charge.")
         print("You have " + coloured(str(moves_left), "green") + " move(s) left on this turn!")
-
         print()
         print("This is your " + coloured(f"{moves}th ", "green") + "move.")
         print()
+        # Print the error messages
         if charge_error:
             cprint("Out of charges!", "red", attrs=["bold"])
         if mountain_error:
