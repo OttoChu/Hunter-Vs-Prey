@@ -1,4 +1,19 @@
 -------------------------------------------------------------------------------------------------------
+v1.6.2          18/06/2023
+
+- Added new Hunter ability (Spotter)
+    - This ability is only available in the Fog of War game mode 
+    - When the ability is activated, the hunter can see the 11x11 area instead of the 5x5 area
+    - The ability can only be used once per game
+    - Choosing this ability will enable Fog of War game mode
+    - If this ability is chosen and the player disables Fog of War, the Jumper ability will be chosen instead
+- Changed the map size to 15x15
+- Fixed a bug where you need to press a key twice to return to the main menu from the rules page
+- Fixed a bug where the moves left on the current turn is not showing the correct number when Time Stopper ability is on
+- Improved the user interface
+- Improved the code quality by separating function for showing the game map into 2 functions
+- Updated the README file
+-------------------------------------------------------------------------------------------------------
 v1.6.1          01/06/2023
 
 - Added new Hunter ability (Teleporter)

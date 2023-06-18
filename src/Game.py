@@ -12,11 +12,13 @@ class Game:
         """
         Initialize the game.
         """
-        self.game_over = False # A boolean that indicates whether the game is over or not.
         self.moves = 0 # The number of moves the player has made.
-        self.difficulty = 3 # A number between 1(easiest) - 6(hardest) representing the chosen difficulty. Default is 3.
-        self.abilities = 1 # A number representing the chosen abilities. Default is 1.
+        self.game_over = False # A boolean that indicates whether the game is over or not.
         self.fog_of_war = False # A boolean that indicates whether the fog of war is on or not.
+        self.all_difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"] # A list of all the difficulties.
+        self.all_abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER", "SPOTTER", "BAITER", "SHOOTER"] # A list of all the abilities.
+        self.chosen_difficulty = 3 # A number representing the chosen difficulty. Default is 3.
+        self.chosen_ability = 1 # A number representing the chosen ability. Default is 1.
     
     def homepage(self) -> int:
         """
@@ -50,7 +52,7 @@ class Game:
         print()
         print(coloured("1. ", "black") + coloured("The Prey is represented as 🦊.", "yellow"))
         print(coloured("2. ", "black") + coloured("The Hunter is represented as 👨.", "yellow"))
-        print(coloured("3. ", "black") + coloured("Both the Hunter and Prey can move 1 square at a time.", "yellow"))
+        print(coloured("3. ", "black") + coloured("All animals can move 1 tile in any direction per turn. (excluding diagonals)", "yellow"))
         print(coloured("4. ", "black") + coloured("The squares that you can be on are represented as 🌳.", "yellow"))
         print(coloured("5. ", "black") + coloured("The squares that you can NOT be on are represented as 🗻.", "yellow"))
         print(coloured("6. ", "black") + coloured("Invalid move will increment your total moves by 1!", "yellow"))
@@ -64,10 +66,12 @@ class Game:
         print(coloured("E ", "blue") + coloured("to toggle special move on or off.", "yellow"))
         cprint("Any other input will be considered invalid!", "red", attrs=["bold"])
         print()
-        print("The goal of the game is the catch the Prey in the least number of moves!")
+        print("Goal:")
+        cprint("Catch the Prey in the least number of moves!", "yellow")
+        cprint("The Prey will try to escape from you!", "yellow")
+        print()
+        print("Good luck!")
         self.print_press_to_continue()
-        _ = msvcrt.getch()
-        os.system('cls' if os.name == 'nt' else 'clear')
 
     def settings(self) -> int:
         """
@@ -109,8 +113,7 @@ class Game:
         print(coloured("6. ", "black") + coloured("Impossible", "yellow"))
         print(coloured("7. ", "black") + coloured("Back", "yellow"))
         print()
-        difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"]
-        cprint(f"Current difficulty: {difficulties[self.difficulty - 1]}", "blue")
+        cprint(f"Current difficulty: {self.all_difficulties[self.chosen_difficulty - 1]}", "blue")
         print()
         while True:
             option = msvcrt.getch()
@@ -118,7 +121,7 @@ class Game:
                 option = int(option.decode("utf-8"))
                 if option >= 1 and option <= 7:
                     if option < 7:
-                        self.difficulty = option
+                        self.chosen_difficulty = option
                     os.system('cls' if os.name == 'nt' else 'clear')
                     return option
             except (UnicodeDecodeError, ValueError):
@@ -137,13 +140,20 @@ class Game:
         print(coloured("2. ", "black") + coloured("Off", "yellow"))
         print(coloured("3. ", "black") + coloured("Back", "yellow"))
         print()
+        print("Note:")
+        print("The Spotter ability is " + coloured("UNAVAILABLE", "red") + " if Fog of War is off.")
+        print("The " + coloured("Jumper", "yellow") + " ability will be chosen instead.")
+        print()
         cprint(f"Current fog of war: {'ON' if self.fog_of_war else 'OFF'}", "blue")
+        print()
         while True:
             option = msvcrt.getch()
             try:
                 option = int(option.decode("utf-8"))
                 if option >= 1 and option <= 3:
                     if option < 3:
+                        if self.chosen_ability == 4 and option == 2:
+                            self.chosen_ability = 1
                         self.fog_of_war = True if option == 1 else False
                     os.system('cls' if os.name == 'nt' else 'clear')
                     return option
@@ -160,29 +170,36 @@ class Game:
         cprint("Special Ability", "green", attrs=["bold"])
         print()
         print(coloured("1. ", "black") + coloured("Jumper", "yellow"))
-        print("\t Allows you to move 2 tiles at once.")
+        print("\t Moves 2 tiles in the same direction in one turn.")
         print("\t This includes moving over mountains.")
         print("\t You can only use this ability " + coloured("10 ", "red") + "times per game.")
         print(coloured("2. ", "black") + coloured("Time Stopper", "yellow"))
-        print("\t Allows you to stop time for 3 turns.")
+        print("\t Makes 3 moves in the same turn.")
         print("\t During this time, the Prey will not move.")
         print("\t You can only use this ability " + coloured("5 ", "red") + "times per game.")
         print(coloured("3. ", "black") + coloured("Teleporter", "yellow"))
-        print("\t Allows you to teleport to a tile on the map.")
-        print("\t This is only the 8x8 area around the Hunter.")
+        print("\t Teleports to a tile on the map.")
+        print("\t This is only the 9x9 area around the Hunter.")
         print(f"\t You can only teleport to a {T} tile.")
+        print("\t You can end this ability early.")
         print("\t You can only use this ability " + coloured("once ", "red") + "per game.")
-        print(coloured("4. ", "black") + coloured("Back", "yellow"))
+        print(coloured("4. ", "black") + coloured("Spotter", "yellow"))
+        print("\t Reveals 11x11 area around the Hunter.")
+        print("\t Choosing his ability will turn Fog of War " + coloured("ON.", "red"))
+        print("\t You can only use this ability " + coloured("3 ", "red") + "times per game.")
+        print(coloured("5. ", "black") + coloured("Back", "yellow"))
         print()
-        abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER"]
-        cprint(f"Current chosen special ability: {abilities[self.abilities - 1]}", "blue")
+        cprint(f"Current chosen special ability: {self.all_abilities[self.chosen_ability - 1]}", "blue")
+        print()
         while True:
             option = msvcrt.getch()
             try:
                 option = int(option.decode("utf-8"))
-                if option >= 1 and option <= 4:
-                    if option < 4:
-                        self.abilities = option
+                if option >= 1 and option <= 5:     
+                    if option < 5:
+                        if option == 4:
+                            self.fog_of_war = True
+                        self.chosen_ability = option
                     os.system('cls' if os.name == 'nt' else 'clear')
                     return option
             except (UnicodeDecodeError, ValueError):
@@ -297,7 +314,7 @@ class Game:
                 return move
             except UnicodeDecodeError:
                 pass
-            return "INVALID"
+            return
 
     def ask_teleport_location(self, game_map: list, hunter_position: tuple) -> tuple:
         """
