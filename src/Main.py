@@ -28,7 +28,7 @@ def main() -> None:
                             break
                 elif setting_option == 3:
                     while True:
-                        if game.choose_special_ability() == 4:
+                        if game.choose_special_ability() == 5:
                             break
                 elif setting_option == 4:
                     break
