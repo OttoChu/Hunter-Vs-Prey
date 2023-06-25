@@ -72,6 +72,18 @@ You can choose between the following special abilities under the settings menu.
 
 *More special abilities (e.g. Baiter, Shooter) will be added in the future. Stay Tune!*
 
+## Bugs
+*The following are bugs that I know of. If you find any other bugs, please let me know.*
+
+- Teleporter ability removes the fog when teleporting to a new location.
+    
+    - This is due to the fog is only applied when printing in print_game_state() function.
+    The fog should also be applied to the teleport map as well.
+
+    - Additional note: 
+        - If the user tries to teleport to a tile that is covered by fog, the user will not be able to teleport.
+        -  This will remove the an ability charge from the user.
+
 ## Future Updates
 
 *The following are only plans. There might be changes to the finer details.*
