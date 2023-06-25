@@ -1,4 +1,7 @@
-# Hunter Vs Prey v1.6.2
+# Hunter Vs Prey v1.6.3
+# TODO: double check the version number
+
+# TODO: add a new special ability for the hunter (Shooter)
 
 import os
 
