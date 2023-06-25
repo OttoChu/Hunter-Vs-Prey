@@ -1,0 +1,14 @@
+Bugs
+
+Feel free to contact me if you find any bugs in the project. 
+I will try to fix them as soon as possible. 
+
+Here are the bugs that are found in the project:
+
+- Teleporter ability removes the fog when teleporting to a new location.
+    This is due to the fog is only applied when printing in print_game_state() function.
+    The fog should also be applied to the teleport map as well.
+
+    Additional note:
+    - If the user tries to teleport to a tile that is covered by fog, the user will not be able to teleport.
+        This will remove the an ability charge from the user.
