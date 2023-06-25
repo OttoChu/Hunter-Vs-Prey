@@ -10,5 +10,5 @@ Here are the bugs that are found in the project:
     The fog should also be applied to the teleport map as well.
 
     Additional note:
-    - If the user tries to teleport to a tile that is covered by fog, the user will not be able to teleport.
-        This will remove the an ability charge from the user.
+    If the user tries to teleport to a tile that is covered by fog, the user will not be able to teleport.
+    This will remove the an ability charge from the user.
