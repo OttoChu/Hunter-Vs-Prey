@@ -82,16 +82,14 @@ You can choose between the following special abilities under the settings menu.
 
     - Additional note: 
         - If the user tries to teleport to a tile that is covered by fog, the user will not be able to teleport.
-        -  This will remove the an ability charge from the user.
+        - This will remove the an ability charge from the user.
 
 ## Future Updates
 
 *The following are only plans. There might be changes to the finer details.*
 
 1. Add a GUI (using pygame)
-
-    - using pygame to make the game more interactive
-
+    - using pygame to make the game more interactive **(in progress)**
     - using kivy to make the game into an app (maybe)
 
 2. Different types of prey (with different special moves)
@@ -110,3 +108,23 @@ You can choose between the following special abilities under the settings menu.
     - Shooter
         - shoot a bullet in a straight line in any direction
         - the bullet should be able to kill the prey if it hits it (ending game if the bullet hits the prey)
+
+5. More game modes
+    - Multiple Prey
+        - there will be more than one prey on the map
+        - the hunter will have to catch all the prey to win
+        
+6. Add a database
+    - need to have different accounts
+    - can play as a guest (no account needed)
+    - to store the best score of each game mode
+    - to store achievements (e.g. fastest win, most turns taken, etc.)
+    - a leaderboard for each game mode to compare with other players
+
+7. Add a shop
+    - to buy new abilities
+    - to buy new skins for the hunter and prey (only after GUI is implemented)
+
+8. Add a tutorial
+    - to teach new players how to play the game
+    - probably after GUI is implemented
