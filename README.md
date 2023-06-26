@@ -3,6 +3,8 @@ This is a game where you play as the Hunter and your goal is to catch the Prey i
 
 This game will be updated sometimes. To see what changed, have a look at the *update_log.txt*.
 
+**Additional note: This game is built using Python 3.8.10. It might not work on other versions of Python.**
+
 ## Getting Started
 Install the dependencies using following command:
 
@@ -117,6 +119,7 @@ You can choose between the following special abilities under the settings menu.
 6. Add a database
     - need to have different accounts
     - can play as a guest (no account needed)
+    - save game for later
     - to store the best score of each game mode
     - to store achievements (e.g. fastest win, most turns taken, etc.)
     - a leaderboard for each game mode to compare with other players
