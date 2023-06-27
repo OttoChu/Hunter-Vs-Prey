@@ -4,8 +4,7 @@ class Button():
     '''
     The Button class is used to create a button.
     '''
-    def __init__(self, size: tuple, position: tuple, text: str, font: pygame.font.Font, text_colour: tuple, 
-                 normal_colour: tuple, highlight_colour: tuple) -> None:
+    def __init__(self, size: tuple, position: tuple, text: str, font: pygame.font.Font) -> None:
         '''
         Initializes the button.
         
@@ -13,17 +12,14 @@ class Button():
         :param position:            The position of the button.
         :param text:                The text of the button.
         :param font:                The font of the button.
-        :param text_colour:         The colour of the text of the button.
-        :param normal_colour:       The colour of the button when it is not being hovered over.
-        :param highlight_colour:    The colour of the button when it is being hovered over.
         '''
         self.size = size
         self.position = position
         self.text = text
         self.font = font
-        self.text_colour = text_colour
-        self.normal_colour = normal_colour
-        self.highlight_colour = highlight_colour
+        self.text_colour = (0, 0, 0)
+        self.normal_colour = (0, 255, 255)
+        self.highlight_colour = (0, 255, 0)
 
 
     def draw(self, screen: pygame.Surface) -> None:
