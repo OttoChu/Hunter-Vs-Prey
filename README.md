@@ -1,10 +1,10 @@
 # Hunter-Vs-Prey
 This is a game where you play as the Hunter and your goal is to catch the Prey in the shortest amount of turns. 
 
-This game will be updated sometimes. To see what changed, have a look at the *update_log.txt*.
+This game will be updated sometimes. To see what changed, have a look at the *update_log.txt* under the folder named *"docs"*.
 
 ## Getting Started
-Install the dependencies using following command:
+Install the dependencies using the following command:
 
     pip install -r ./dep/requirements.txt
 
@@ -24,13 +24,13 @@ To start the game, fun the following command:
 
 2. The Prey is represented as 👨.
 
-3. Both the Hunter and Prey can move 1 tile in any direction per turn (excluding diagonals).
+3. The Hunter and Prey can move 1 tile in any direction per turn (excluding diagonals).
 
 4. Squares that you can be on are represented as 🌳.
 
 5. Squares that you can **NOT** be on are represented as 🗻.
 
-6. If an invalid move is made, your total move will be incremented by **1**.
+6. If an invalid move is made, your total move count will be incremented by **1**.
 
 7. Toggling your special move will count as a turn.
 
@@ -42,7 +42,7 @@ You can toggle the following game modes under the settings menu:
     - The rest of the map is covered by fog.
     - The fog is represented as 🌫️.
 
-*Currently there is only one game mode, but more will be added in the future. Feel free to suggest new game modes!*
+*Currently, there is only one game mode, but more will be added in the future. Feel free to suggest new game modes!*
 
 ### Special abilities
 
@@ -66,7 +66,7 @@ You can choose between the following special abilities under the settings menu.
     - This ability can be used once per game.
 
 - Spotter
-    - Reveals a 11x11 area around the Hunter instead of the normal 5x5 in Fog of War game mode.
+    - Reveals an 11x11 area around the Hunter instead of the normal 5x5 in Fog of War game mode.
     - This ability can be used 3 times per game.
     - This ability can only be used in Fog of War mode. (If Fog of War is off, this ability will turn Fog of War **ON**)
 
@@ -77,12 +77,12 @@ You can choose between the following special abilities under the settings menu.
 
 - Teleporter ability removes the fog when teleporting to a new location.
     
-    - This is due to the fog is only applied when printing in print_game_state() function.
+    - This is because fog is only applied when printing in the print_game_state() function.
     The fog should also be applied to the teleport map as well.
 
     - Additional note: 
-        - If the user tries to teleport to a tile that is covered by fog, the user will not be able to teleport.
-        - This will remove the an ability charge from the user.
+        - If the user tries to teleport to a tile covered by fog, the user will not be able to teleport.
+        - This will remove an ability charge from the user.
 
 ## Future Updates
 
@@ -98,7 +98,7 @@ You can choose between the following special abilities under the settings menu.
 
     - Could use Markov Decision Process (MDP) to make the prey smarter (maybe look into this)
 
-    - Could use Reinforcement Learning (RL) to make the prey smarter (long term goal)
+    - Could use Reinforcement Learning (RL) to make the prey smarter (long-term goal)
 
 4. More types of hunter ability
     - Baiter
@@ -107,7 +107,7 @@ You can choose between the following special abilities under the settings menu.
         - (only if the prey is close enough (distance to do set later))
     - Shooter
         - shoot a bullet in a straight line in any direction
-        - the bullet should be able to kill the prey if it hits it (ending game if the bullet hits the prey)
+        - the bullet should be able to kill the prey if it hits it (ending the game if the bullet hits the prey)
 
 5. More game modes
     - Multiple Prey
