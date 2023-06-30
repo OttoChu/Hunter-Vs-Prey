@@ -5,7 +5,7 @@ from GUI.GameGUI import *
 if __name__ == '__main__':
     pygame.init()
     game_gui = GameGUI()  
-    
+
     while game_gui.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -20,7 +20,6 @@ if __name__ == '__main__':
         if not any(pygame.mouse.get_pressed()):
             game_gui.mouse_held = False
 
-        # game_gui.screen.fill((0, 0, 100)) # Resets the screen
         game_gui.screen.blit(game_gui.background_image, (0, 0)) # Draws the background
 
         # Goes to different states of the game
