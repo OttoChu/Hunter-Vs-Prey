@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------------------------------
+v1.6.3          05/07/2023
+
+- Added an executable file for people who do not have python installed nor wanting to install all the dependencies
+    - The executable file is called "HunterVsPrey_vXX.exe" where XX is the version number
+    - The executable file might not work on some operating systems
+- Changed some of the black text to magenta text for better readability on the terminal
+- Updated the README file to include the executable file
+-------------------------------------------------------------------------------------------------------
 v1.6.2          18/06/2023
 
 - Added new Hunter ability (Spotter)

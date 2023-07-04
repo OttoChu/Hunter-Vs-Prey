@@ -4,13 +4,21 @@ This is a game where you play as the Hunter and your goal is to catch the Prey i
 This game will be updated sometimes. To see what changed, have a look at the *update_log.txt* under the folder named *"docs"*.
 
 ## Getting Started
+
+### For those who want to play without installing Python and the dependencies (aka lazy and trust me)
+
+To start the game, you can run the executable file named ***"HunterVsPrey_vXX.exe"*** where "*XX*" is the version number of the game.
+
+### For those who don't trust the executable file
+
 Install the dependencies using the following command:
 
-    pip install -r ./dep/requirements.txt
+    pip install -r .\dep\requirements.txt
 
-To start the game, fun the following command:
+To start the game, you can run the following command:
 
-    python ./src/main.py
+    python .\src\Main.py
+
 
 ***Good Luck and have fun!***
 
