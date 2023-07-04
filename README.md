@@ -46,6 +46,7 @@ To start the game, you can run the following command:
 You can toggle the following game modes under the settings menu:
 
 - Fog of War (Off by default)
+
     - You can only see a 5x5 area around the Hunter.
     - The rest of the map is covered by fog.
     - The fog is represented as 🌫️.
@@ -57,23 +58,27 @@ You can toggle the following game modes under the settings menu:
 You can choose between the following special abilities under the settings menu.
 
 - Jumper (**Default**)
+
     - Moves 2 tiles in the same direction in one turn.
     - This includes jumping over a mountain.
     - This ability can be used 10 times per game.
 
 - Time Stopper
+
     - Makes 3 moves in the same turn.
     - During this time, the Prey will not move.
     - This ability can be ended early by pressing 'E' again.
     - This ability can be used 5 times per game.
 
 - Teleporter
+
     - Teleports to a tile on the map.
     - This is only the 9x9 area around the Hunter.
     - You can only teleport to a 🌳 tile.
     - This ability can be used once per game.
 
 - Spotter
+
     - Reveals an 11x11 area around the Hunter instead of the normal 5x5 in Fog of War game mode.
     - This ability can be used 3 times per game.
     - This ability can only be used in Fog of War mode. (If Fog of War is off, this ability will turn Fog of War **ON**)
@@ -93,7 +98,6 @@ You can choose between the following special abilities under the settings menu.
         - This will remove an ability charge from the user.
 
 ## Future Updates
-
 *The following are only plans. There might be changes to the finer details.*
 
 1. Add a GUI (using pygame)
