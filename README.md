@@ -6,13 +6,21 @@ This game will be updated sometimes. To see what changed, have a look at the *up
 **Additional note: This game is built using Python 3.8.10. It might not work on other versions of Python.**
 
 ## Getting Started
-Install the dependencies using following command:
 
-    pip install -r ./dep/requirements.txt
+### For those who want to play without installing Python and the dependencies (aka lazy and trust me)
 
-To start the game, fun the following command:
+To start the game, you can run the executable file named ***"HunterVsPrey_vXX.exe"*** where "*XX*" is the version number of the game.
 
-    python ./src/main.py
+### For those who don't trust the executable file
+
+Install the dependencies using the following command:
+
+    pip install -r .\dep\requirements.txt
+
+To start the game, you can run the following command:
+
+    python .\src\Main.py
+
 
 ***Good Luck and have fun!***
 
@@ -37,9 +45,11 @@ To start the game, fun the following command:
 7. Toggling your special move will count as a turn.
 
 ### Game Modes
+
 You can toggle the following game modes under the settings menu:
 
 - Fog of War (Off by default)
+
     - You can only see a 5x5 area around the Hunter.
     - The rest of the map is covered by fog.
     - The fog is represented as 🌫️.

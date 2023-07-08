@@ -2,6 +2,7 @@ import pygame
 
 from Tiles import *
 from Button import Button
+from Sprite import Sprite
 
 
 class GameGUI():
@@ -20,7 +21,7 @@ class GameGUI():
         # States
         self.all_states = ["welcome_page", "homepage", "how_to_play_page", "setting_page", "difficulty_page", 
                            "fog_of_war_page", "ability_page", "game_page", "game_over_page"]
-        self.current_state = self.all_states[0] # The current state of the game
+        self.current_state = self.all_states[-1] # The current state of the game
 
         # Fonts
         self.normal_font_small = pygame.font.Font("src/Fonts/Arial.ttf", 20) 
@@ -62,6 +63,10 @@ class GameGUI():
         self.chosen_difficulty = 3 # The chosen difficulty of the game
         self.chosen_ability = 1 # The chosen ability of the game
         self.chosen_fog_of_war = False # The chosen fog of war of the game
+
+        # Sprites
+        game_over_sprite_path = "src/Graphics/funny_cat.png"
+        self.game_over_sprite = Sprite(self.screen_size, game_over_sprite_path) # The game over sprite
 
         # Random
         self.running = True # Flag to keep track of whether the game is running or not
@@ -155,7 +160,7 @@ class GameGUI():
 
         # Checks if the user has pressed any key
         if new_game_button.is_clicked() and self.first_click:
-            self.current_state = self.all_states[4]
+            self.current_state = self.all_states[7]
         elif how_to_play_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[2]
         elif settings_button.is_clicked() and self.first_click:
@@ -324,7 +329,6 @@ class GameGUI():
         elif on_button.is_clicked() and self.first_click:
             self.chosen_fog_of_war = True
         elif off_button.is_clicked() and self.first_click:
-            # TODO: check if it actually works
             self.chosen_fog_of_war = False
             if self.chosen_ability == 4:
                 self.chosen_ability = 1
@@ -406,19 +410,41 @@ class GameGUI():
         Draws the game page of the game.
         '''
         raise NotImplementedError
-    
-    def game_over(self) -> None:
+
+    def game_over(self, moves) -> None:
         '''
         Draws the game over page of the game.
+
+        :param moves: The number of moves the player made.
         '''
-        raise NotImplementedError
+        # Draws the bouncing sprite in the background
+        # Moves the sprite
+        self.game_over_sprite.update()
+        # Checks if the sprite has hit the edge of the screen
+        
+        self.game_over_sprite.draw(self.screen)
+
+        # Draws the game over text
+        self.draw_text_center("Game Over!", self.pixel_font_huge, self.red, (self.screen_center[0], self.screen_center[1] - 100))
+        self.draw_text_center("The hunter has caught the prey!", self.pixel_font_normal, self.white, self.screen_center)
+        self.draw_text_center(f"You caught the prey in {moves} moves.", self.pixel_font_large, self.green, (self.screen_center[0], self.screen_center[1] + 75))
+        
+        # Draws the navigation buttons
+        again_button = Button((200, 100), (self.screen_center[0] - 250, self.screen_center[1] + 150), "Again", self.pixel_font_large)
+        again_button.draw(self.screen)
+        home_button = Button((200, 100), (self.screen_center[0] + 50, self.screen_center[1] + 150), "Home", self.pixel_font_large)
+        home_button.draw(self.screen)
+
+        # Checks if the user clicked on the buttons
+        if again_button.is_clicked() and self.first_click:
+            self.current_state = self.all_states[7]
+        elif home_button.is_clicked() and self.first_click:
+            self.current_state = self.all_states[1]
     
 
-# TODO: Delete this later
-# This is just for testing purposes
-if __name__ == '__main__':
+def main():
     pygame.init()
-    game_gui = GameGUI()  
+    game_gui = GameGUI()
     while game_gui.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -462,7 +488,9 @@ if __name__ == '__main__':
             game_gui.game()
 
         elif game_gui.current_state == "game_over_page":
-            game_gui.game_over()
+            #TODO: Add the number of moves from the game
+            temp_moves = 10
+            game_gui.game_over(temp_moves)
         
         else:
             print("Error: Invalid state")
@@ -471,3 +499,6 @@ if __name__ == '__main__':
         pygame.display.update()
         game_gui.clock.tick(60)
     pygame.quit()
+
+if __name__ == '__main__':
+    main()
