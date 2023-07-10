@@ -1,4 +1,4 @@
-from Animals.Animal import Animal
+from Animal import Animal
 
 
 class Hunter(Animal):

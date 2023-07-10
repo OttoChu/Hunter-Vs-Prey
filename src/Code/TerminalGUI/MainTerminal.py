@@ -6,8 +6,8 @@ import os
 from Tiles import *
 from Game import Game
 from GameMap import GameMap
-from Animals.Hunter import Hunter
-from Animals.Prey import Prey
+from Hunter import Hunter
+from Prey import Prey
 
 def main() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')

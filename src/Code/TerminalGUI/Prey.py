@@ -1,6 +1,6 @@
 from random import randint
 
-from Animals.Animal import Animal
+from Animal import Animal
 from GameMap import *
 from Node import Node
 from Tiles import *

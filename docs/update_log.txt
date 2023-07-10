@@ -1,9 +1,19 @@
 -------------------------------------------------------------------------------------------------------
-v1.7.0          TODO
+v2.0.0          TODO
 
-TODO
-REMEMBER TO REMOVE temp_actions.py BEFORE RELEASING
+- Added new GUI (Pygame GUI)
+- Moved the Terminal GUI to a new file and it will no longer be updated pass v1.6.3
+- Added ability to choose which GUI to use when first running the program
+- Updated file structure
+- Updated README file
+-------------------------------------------------------------------------------------------------------
+v1.6.3          05/07/2023
 
+- Added an executable file for people who do not have python installed nor wanting to install all the dependencies
+    - The executable file is called "HunterVsPrey_vXX.exe" where XX is the version number
+    - The executable file might not work on some operating systems
+- Changed some of the black text to magenta text for better readability on the terminal
+- Updated the README file to include the executable file
 -------------------------------------------------------------------------------------------------------
 v1.6.2          18/06/2023
 
