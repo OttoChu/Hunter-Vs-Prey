@@ -1,5 +1,4 @@
-# Hunter Vs Prey v1.7.0
-# TODO: double check the version number
+# Hunter Vs Prey v1.6.4
 
 import os
 

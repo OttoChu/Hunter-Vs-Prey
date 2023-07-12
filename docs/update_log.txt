@@ -1,11 +1,10 @@
 -------------------------------------------------------------------------------------------------------
-v2.0.0          TODO
+v1.6.4          12/07/2023
 
-- Added new GUI (Pygame GUI)
-- Moved the Terminal GUI to a new file and it will no longer be updated pass v1.6.3
-- Added ability to choose which GUI to use when first running the program
-- Updated file structure
-- Updated README file
+- LAST VERSION FOR THE TERMINAL VERSION OF THE GAME
+- Added a warning message on the homepage telling the user that this is the last version for the terminal version of the game
+- Bugs with the terminal version of the game will not be fixed anymore
+- Updated the README file to knowledge the last version for the terminal version of the game
 -------------------------------------------------------------------------------------------------------
 v1.6.3          05/07/2023
 

@@ -1,8 +1,10 @@
 import pygame
 from GameGUI import GameGUI
+from Game import Game
 
 def main():
     pygame.init()
+    game = Game()
     game_gui = GameGUI()
     while game_gui.running:
         for event in pygame.event.get():
@@ -58,3 +60,7 @@ def main():
         pygame.display.update()
         game_gui.clock.tick(60)
     pygame.quit()
+    raise SystemExit
+
+if __name__ == "__main__":
+    main()
