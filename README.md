@@ -8,6 +8,7 @@ This game will be updated sometimes. To see what changed, have a look at the *up
 ### For those who want to play without installing Python and the dependencies (aka lazy and trust me)
 
 To start the game, you can run the executable file named ***"HunterVsPrey_vXX.exe"*** where "*XX*" is the version number of the game.
+*Note: v1.6.4 is the last terminal based version of the game.*
 
 ### For those who don't trust the executable file
 

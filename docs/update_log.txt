@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------
+v1.6.4          12/07/2023
+
+- LAST VERSION FOR THE TERMINAL VERSION OF THE GAME
+- Added a warning message on the homepage telling the user that this is the last version for the terminal version of the game
+- Bugs with the terminal version of the game will not be fixed anymore
+- Updated the README file to knowledge the last version for the terminal version of the game
+-------------------------------------------------------------------------------------------------------
 v1.6.3          05/07/2023
 
 - Added an executable file for people who do not have python installed nor wanting to install all the dependencies

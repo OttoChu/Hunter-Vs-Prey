@@ -28,6 +28,11 @@ class Game:
         """
         cprint("Welcome to Hunter Vs Prey!", "green", attrs=["bold"])
         print()
+        cprint("Warning:", "red", attrs=["bold"])
+        cprint("This is version 1.6.4.", "red", attrs=["bold"])
+        cprint("It is the last terminal based interface for the game.", "red", attrs=["bold"])
+        cprint("It will no longer be updated!", "red", attrs=["bold"])
+        print()
         print(coloured("1. ", "magenta") + coloured("New Game", "yellow"))
         print(coloured("2. ", "magenta") + coloured("Rules", "yellow"))
         print(coloured("3. ", "magenta") + coloured("Settings", "yellow"))
