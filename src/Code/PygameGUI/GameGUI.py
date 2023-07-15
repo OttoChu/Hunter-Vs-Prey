@@ -3,6 +3,10 @@ import pygame
 from Button import Button
 from Sprite import Sprite
 
+from Hunter import Hunter
+from Prey import Prey
+from Tiles import *
+
 
 class GameGUI():
     '''
@@ -18,9 +22,10 @@ class GameGUI():
         self.screen = pygame.display.set_mode(self.screen_size)
 
         # States
+        # TODO: make this as the function parameter
         self.all_states = ["welcome_page", "homepage", "how_to_play_page", "setting_page", "difficulty_page", 
                            "fog_of_war_page", "ability_page", "game_page", "game_over_page"]
-        self.current_state = self.all_states[-1] # The current state of the game
+        self.current_state = self.all_states[-2] # The current state of the game
 
         # Fonts
         self.normal_font_small = pygame.font.Font("src/Fonts/Arial.ttf", 20) 
@@ -43,20 +48,21 @@ class GameGUI():
         self.blue = (0, 0, 255)
 
         # Graphics
-        self.icon_image = pygame.image.load("src/Graphics/icon.png")
         self.background_image = pygame.transform.scale(pygame.image.load("src/Graphics/background.png"), self.screen_size)
         self.hunter_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/hunter.png"), (30, 30))
         self.prey_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/prey.png"), (30, 30))
         self.tree_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/tree.png"), (30, 30))
         self.mountain_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/mountain.png"), (30, 30))
         self.fog_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/fog.png"), (30, 30))
+        self.arrow_image = pygame.transform.scale(pygame.image.load("src/Graphics/arrow.png"), (50, 50))
         
         # Window settings
         pygame.display.set_caption("Hunter vs Prey") # Sets the title of the window
-        pygame.display.set_icon(self.icon_image) # Sets the icon of the window
+        pygame.display.set_icon(pygame.image.load("src/Graphics/icon.png")) # Sets the icon of the window
         self.clock = pygame.time.Clock()
 
         # Game settings
+        # TODO: Make the difficulty and ability as the state parameters
         self.all_difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"] # A list of all the difficulties.
         self.all_abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER", "SPOTTER", "BAITER", "SHOOTER"] # A list of all the abilities.
         self.chosen_difficulty = 3 # The chosen difficulty of the game
@@ -124,6 +130,17 @@ class GameGUI():
         text_rect.topleft = topleft_position
         self.screen.blit(text_obj, text_rect)
         return text_rect
+    
+    def draw_line(self, start_position: tuple, end_position: tuple, colour: tuple, width: int) -> None:
+        '''
+        Draws a line on the screen.
+
+        :param start_position:  The starting position of the line.
+        :param end_position:    The ending position of the line.
+        :param colour:          The colour of the line.
+        :param width:           The width of the line.
+        '''
+        pygame.draw.line(self.screen, colour, start_position, end_position, width)
 
     def welcome_page(self) -> None:
         '''
@@ -404,14 +421,75 @@ class GameGUI():
             if self.chosen_ability == 4:
                 self.chosen_fog_of_war = True
 
-    def game(self) -> None:
+    def game(self, game_map: list, whose_turn: str, turn_num: int, hunter: Hunter) -> None:
         '''
         Draws the game page of the game.
+
+        :param game_map:        The map of the game
         '''
-        # TODO: Draw the game page of the game
+        # TODO: TEMPORARY
+        moves_left = 1
 
+        # Draw the game map
+        for row in range(len(game_map)):
+            for col in range(len(game_map[row])):
+                position = (40*col + 550, 40*row + 40)
+                if game_map[row][col] == T:
+                    self.screen.blit(self.tree_image_small, position)
+                elif game_map[row][col] == H:
+                    self.screen.blit(self.hunter_image_small, position)
+                elif game_map[row][col] == P:
+                    self.screen.blit(self.prey_image_small, position)
+                elif game_map[row][col] == M:
+                    self.screen.blit(self.mountain_image_small, position)
 
-        raise NotImplementedError
+        # Draws the turn details
+        if whose_turn == H:
+            self.draw_text_topleft("Hunter's Turn", self.pixel_font_large, self.white, (50, 30))
+            self.draw_text_topleft(f"Turn  {turn_num}", self.pixel_font_normal, self.white, (50, 150))
+            self.draw_text_topleft(f"{moves_left} move(s) left on this turn", self.pixel_font_normal, self.white, (50, 200))
+            self.draw_text_topleft("Current Ability:", self.pixel_font_small, self.white, (50, 275))
+            self.draw_text_topleft(f"{hunter.special_ability}", self.pixel_font_small, self.white, (250, 275))
+            self.draw_text_topleft("Ability status:", self.pixel_font_small, self.white, (50, 300))
+            self.draw_text_topleft(f"{'ON' if hunter.special_status else 'OFF'}", self.pixel_font_small, self.white, (250, 300))
+            self.draw_text_topleft("Charges:", self.pixel_font_small, self.white, (50, 325))
+            self.draw_text_topleft(f"{hunter.charges}", self.pixel_font_small, self.white, (250, 325))
+        
+        elif whose_turn == P:
+            # TODO: Add the details for the prey's turn
+            #       Including what the prey did?
+            self.draw_text_topleft("Prey's Turn", self.pixel_font_large, self.white, (50, 30))
+        
+        # Draws the buttons
+        up_button = Button((100, 100), (200 , 375), '', self.pixel_font_small)
+        up_button.draw(self.screen)
+        self.screen.blit(self.arrow_image, (225, 400))
+        down_button = Button((100, 100), (200, 485), '', self.pixel_font_small)
+        down_button.draw(self.screen)
+        self.screen.blit(pygame.transform.rotate(self.arrow_image, 180), (225, 510))
+        left_button = Button((100, 100), (90, 485), '', self.pixel_font_small)
+        left_button.draw(self.screen)
+        self.screen.blit(pygame.transform.rotate(self.arrow_image, 90), (115, 510))
+        right_button = Button((100, 100), (310, 485), '', self.pixel_font_small)
+        right_button.draw(self.screen)
+        self.screen.blit(pygame.transform.rotate(self.arrow_image, 270), (335, 510))
+        ability_button = Button((330, 50), (90, 595), "Ability", self.pixel_font_normal)
+        ability_button.draw(self.screen)
+
+        # Checks if the user clicked on the buttons
+        if self.first_click:
+            if up_button.is_clicked():
+                pass
+            elif down_button.is_clicked():
+                pass
+            elif left_button.is_clicked():
+                pass
+            elif right_button.is_clicked():
+                pass
+
+        # TODO: Remove this, this is just a placeholder
+        # Guidelines
+        pygame.draw.rect(self.screen, self.red, (500, 0, 1, 675), 1)
 
     def game_over(self, moves) -> None:
         '''
@@ -420,10 +498,7 @@ class GameGUI():
         :param moves: The number of moves the player made.
         '''
         # Draws the bouncing sprite in the background
-        # Moves the sprite
-        self.game_over_sprite.update()
-        # Checks if the sprite has hit the edge of the screen
-        
+        self.game_over_sprite.update()      
         self.game_over_sprite.draw(self.screen)
 
         # Draws the game over text

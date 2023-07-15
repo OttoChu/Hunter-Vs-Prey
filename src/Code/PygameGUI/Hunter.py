@@ -76,7 +76,6 @@ class Hunter(Animal):
             # show 10x10 area instead of 5x5 in fog of war
             # TODO: implement this
             pass
-
         
         elif self.special_ability == "Shooter":
             raise NotImplementedError

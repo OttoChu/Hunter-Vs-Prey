@@ -1,11 +1,23 @@
 import pygame
-from GameGUI import GameGUI
+
 from Game import Game
+from GameGUI import GameGUI
+from Hunter import Hunter
+from Prey import Prey
+from Tiles import *
 
 def main():
     pygame.init()
     game = Game()
     game_gui = GameGUI()
+
+    game.setup_board(game.chosen_difficulty)
+    temp_hunter_pos, temp_prey_pos = game.get_animal_position()
+    hunter = Hunter(temp_hunter_pos, game.chosen_ability)
+    prey = Prey(temp_prey_pos)
+    
+
+
     while game_gui.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -46,7 +58,7 @@ def main():
             game_gui.ability()
 
         elif game_gui.current_state == "game_page":
-            game_gui.game()
+            game_gui.game(game.board, H, game.moves, hunter)
 
         elif game_gui.current_state == "game_over_page":
             #TODO: Add the number of moves from the game

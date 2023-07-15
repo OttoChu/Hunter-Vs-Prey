@@ -1,5 +1,3 @@
-from GameMap import GameMap
-
 class Node:
     """
     A class representing a node in the A* algorithm.
@@ -28,24 +26,23 @@ class Node:
         """
         return abs(node.x - goal.x) + abs(node.y - goal.y)
 
-    def is_valid_cell(self, game_map: GameMap, new_x: int, new_y: int) -> bool:
+    def is_valid_cell(self, board: list, new_x: int, new_y: int) -> bool:
         """
         Check if the target square is a valid square. A square is valid if it is within the bounds of the map and is not a mountain.
 
-        :param game_map:    The GameMap object.
+        :param board:       The game board.
         :param new_x:       The x coordinate of the target square.
         :param new_y:       The y coordinate of the target square.
 
         :return:            A boolean representing whether the target square is a valid square or not.
         """
-        return 0 <= new_x < game_map.size and 0 <= new_y < game_map.size and game_map.game_map[new_y][new_x] != "🗻"
+        return 0 <= new_x < len(board) and 0 <= new_y < len(board) and board[new_y][new_x] != "🗻"
 
-    def get_neighboring_cells(self, game_map: GameMap) -> "list['Node']":
+    def get_neighboring_cells(self, board: list) -> "list['Node']":
         """
         Get the neighboring cells of the current node. 
 
-        :param game_map:    The GameMap object.
-
+        :param board:       The game board.
         :return:            A list of neighboring cells.
         """
         neighbors = []
@@ -53,7 +50,7 @@ class Node:
         for dx, dy in directions:
             new_x = self.x + dx
             new_y = self.y + dy
-            if self.is_valid_cell(game_map, new_x, new_y):
+            if self.is_valid_cell(board, new_x, new_y):
                 neighbors.append(Node((new_x, new_y)))
         return neighbors
 
@@ -71,11 +68,11 @@ class Node:
             node = node.parent
         return path[::-1]
 
-    def astar(self, game_map: GameMap, goal: "Node") -> "list['tuple(int, int)']":
+    def astar(self, board: list, goal: "Node") -> "list['tuple(int, int)']":
         """
         Perform the A* search algorithm to find a path from the start node to the goal node.
 
-        :param game_map:    The GameMap object.
+        :param board:       The game board.
         :param goal:        The goal node.
 
         :return:            The path from the start node to the goal node if a valid path is found, None otherwise.
@@ -88,7 +85,7 @@ class Node:
                 return self.reconstruct_path(current)  # Path found, return the reconstructed path
             open_set.remove(current)
             closed_set.add((current.x, current.y))
-            neighbors = current.get_neighboring_cells(game_map)
+            neighbors = current.get_neighboring_cells(board)
             for neighbor in neighbors:
                 if (neighbor.x, neighbor.y) in closed_set:
                     continue

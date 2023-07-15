@@ -3,6 +3,7 @@ import msvcrt
 from termcolor import colored as coloured, cprint
 
 if __name__ == '__main__':
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
     os.system('cls' if os.name == 'nt' else 'clear')
     cprint("Choose your GUI:", "cyan")
     print(coloured("1. ", "magenta") + coloured("Pygame", "yellow"))
@@ -20,6 +21,8 @@ if __name__ == '__main__':
             cprint("Invalid input. Please try again.", "red")
         else:
             if key == b'1':
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("Please wait while the game is loading...")
                 os.system("python src\Code\PygameGUI\MainPygame.py") 
             elif key == b'2': # Run terminal GUI (up to v1.6.3)
                 os.system("python src\Code\TerminalGUI\MainTerminal.py")
