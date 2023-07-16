@@ -14,12 +14,15 @@ class Sprite(pygame.sprite.Sprite):
         super().__init__()  # Initialize the parent class
 
         self.angle = 0 # The angle of the 
+        self.rotate_speed = randint(-10, 10) # The speed at which the sprite rotates
         self.screen_size = screen_size
 
         # The image of the sprite
         if sprite_image_path is not None:
-            self.image = pygame.transform.scale(pygame.image.load(sprite_image_path).convert_alpha(), (200, 200))
-            self.rect = self.image.get_rect()
+            random_size = randint(50, 300)
+            self.original_image = pygame.transform.scale(pygame.image.load(sprite_image_path).convert_alpha(), (random_size, random_size))
+            self.rotated_image = pygame.transform.scale(pygame.image.load(sprite_image_path).convert_alpha(), (random_size, random_size))
+            self.rect = self.original_image.get_rect()
         else:
             self.rect = pygame.Rect(0, 0, 50, 50)
             self.image = pygame.Surface(self.rect.size)
@@ -33,8 +36,8 @@ class Sprite(pygame.sprite.Sprite):
             self.rect.y = sprite_position[1]
         # The speed of the sprite
         if sprite_move_speed is None:
-            self.dx = 5
-            self.dy = 5
+            self.dx = randint(-10, 10)
+            self.dy = self.dx
         else:
             self.dx = sprite_move_speed[0]
             self.dy = sprite_move_speed[1]
@@ -56,4 +59,12 @@ class Sprite(pygame.sprite.Sprite):
         
         :param screen:                  The screen that the sprite is being drawn on.
         '''
-        screen.blit(self.image, self.rect)
+        screen.blit(self.rotated_image, self.rect)
+
+    def rotate(self) -> None:
+        '''
+        Rotates the sprite.
+        '''
+        self.angle += self.rotate_speed
+        self.rotated_image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.rotated_image.get_rect(center=self.rect.center)

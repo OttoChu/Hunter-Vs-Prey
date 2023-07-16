@@ -14,7 +14,7 @@ class Game():
         self.fog_of_war = False # Whether the fog of war is enabled
         self.chosen_difficulty = 3 # The difficulty chosen by the player
         self.chosen_ability = 1 # The ability chosen by the player
-        self.moves = 0 # The number of moves the player has made
+        self.moves = 1 # The number of moves the player has made
 
         self.board_size = 15 # The size of the board
         self.board = [] # The board of the game
@@ -61,13 +61,24 @@ class Game():
             # TODO: Add a loading screen?
             #       The loading screen could be a progress bar that fills up as the board is being generated?
 
-
-
             prey_x = randint(1, self.board_size - 1)
             prey_y = randint(1, self.board_size - 1)
             if self.board[prey_y][prey_x] != M and (prey_x, prey_y) != (hunter_x, hunter_y):
                 self.board[prey_y][prey_x] = P
                 break # Break out of the loop once the Prey has been added to the board
+
+    def setup_game(self, difficulty: int, ability: int) -> None:
+        """
+        Sets up the game.
+
+        :param difficulty:  A number between 1(easiest) - 6(hardest) representing the chosen difficulty.
+        :param ability:     A number between 1 and 3 representing the chosen ability.
+        """
+        self.setup_board(difficulty)
+        self.chosen_difficulty = difficulty
+        self.chosen_ability = ability
+        self.moves = 1
+        self.game_over = False
     
     def is_board_reachable(self) -> bool:
         """

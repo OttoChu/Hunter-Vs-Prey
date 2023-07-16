@@ -20,12 +20,15 @@ class GameGUI():
         self.screen_size = (1200, 675) # The size of the screen
         self.screen_center = (self.screen_size[0] // 2, self.screen_size[1] // 2)
         self.screen = pygame.display.set_mode(self.screen_size)
+        pygame.display.set_caption("Hunter vs Prey") # Sets the title of the window
+        pygame.display.set_icon(pygame.image.load("src/Graphics/icon.png")) # Sets the icon of the window
+        self.clock = pygame.time.Clock()
 
         # States
         # TODO: make this as the function parameter
         self.all_states = ["welcome_page", "homepage", "how_to_play_page", "setting_page", "difficulty_page", 
                            "fog_of_war_page", "ability_page", "game_page", "game_over_page"]
-        self.current_state = self.all_states[-2] # The current state of the game
+        self.current_state = self.all_states[0] # The current state of the game
 
         # Fonts
         self.normal_font_small = pygame.font.Font("src/Fonts/Arial.ttf", 20) 
@@ -34,6 +37,7 @@ class GameGUI():
         self.normal_font_very_large = pygame.font.Font("src/Fonts/Arial.ttf", 75)
         self.normal_font_huge = pygame.font.Font("src/Fonts/Arial.ttf", 100)
 
+        self.pixel_font_very_small = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 15)
         self.pixel_font_small = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 20)
         self.pixel_font_normal = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 30)
         self.pixel_font_large = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 50)
@@ -56,11 +60,6 @@ class GameGUI():
         self.fog_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/fog.png"), (30, 30))
         self.arrow_image = pygame.transform.scale(pygame.image.load("src/Graphics/arrow.png"), (50, 50))
         
-        # Window settings
-        pygame.display.set_caption("Hunter vs Prey") # Sets the title of the window
-        pygame.display.set_icon(pygame.image.load("src/Graphics/icon.png")) # Sets the icon of the window
-        self.clock = pygame.time.Clock()
-
         # Game settings
         # TODO: Make the difficulty and ability as the state parameters
         self.all_difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"] # A list of all the difficulties.
@@ -71,9 +70,10 @@ class GameGUI():
 
         # Sprites
         game_over_sprite_path = "src/Graphics/funny_cat.png"
-        self.game_over_sprite = Sprite(self.screen_size, game_over_sprite_path) # The game over sprite
+        self.game_over_sprite_list = [Sprite(self.screen_size, game_over_sprite_path) for i in range(20)] # The game over sprite
 
         # Random
+        self.game_version = "v2.0.0"
         self.running = True # Flag to keep track of whether the game is running or not
         self.any_key_pressed = False  # Flag to keep track of key press
         self.first_click = False # Flag to keep track of whether the current mouse press is the first time
@@ -131,6 +131,30 @@ class GameGUI():
         self.screen.blit(text_obj, text_rect)
         return text_rect
     
+    def draw_text_bottomright(self, text: str, font: pygame.font.Font, colour: tuple, bottomright_position: tuple) -> pygame.Rect:
+        '''
+        Draws text on the screen.
+        
+        :param text:    The text that is being drawn.
+        :param font:    The font of the text.
+        :param color:   The color of the text.
+        :param x:       The x coordinate of the text.
+        :param y:       The y coordinate of the text.
+
+        :return:        The rectangle of the text.
+        '''
+        text_obj = font.render(text, True, colour)
+        text_rect = text_obj.get_rect()
+        text_rect.bottomright = bottomright_position
+        self.screen.blit(text_obj, text_rect)
+        return text_rect
+    
+    def draw_game_version(self) -> None:
+        '''
+        Draws the game version on the screen.
+        '''
+        self.draw_text_bottomright(self.game_version, self.pixel_font_very_small, self.white, (self.screen_size[0] - 5, self.screen_size[1] - 5))
+    
     def draw_line(self, start_position: tuple, end_position: tuple, colour: tuple, width: int) -> None:
         '''
         Draws a line on the screen.
@@ -160,9 +184,11 @@ class GameGUI():
             self.any_key_pressed = False
             self.wait_counter = 0
             
-    def homepage(self) -> None:
+    def homepage(self) -> bool:
         '''
         Draws the homepage of the game.
+
+        :return:    True if the user has pressed the play button, False otherwise.
         '''
         self.draw_text_center("Hunter Vs Prey!", self.pixel_font_huge, self.white, (self.screen_center[0], self.screen_center[1] - 200))
         new_game_button = Button((300, 150), (self.screen_center[0] - 150, self.screen_center[1] - 25), "Play", self.pixel_font_very_large)
@@ -177,6 +203,7 @@ class GameGUI():
         # Checks if the user has pressed any key
         if new_game_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[7]
+            return True
         elif how_to_play_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[2]
         elif settings_button.is_clicked() and self.first_click:
@@ -421,11 +448,16 @@ class GameGUI():
             if self.chosen_ability == 4:
                 self.chosen_fog_of_war = True
 
-    def game(self, game_map: list, whose_turn: str, turn_num: int, hunter: Hunter) -> None:
+    def game(self, game_map: list, whose_turn: str, turn_num: int, hunter: Hunter) -> str:
         '''
         Draws the game page of the game.
 
         :param game_map:        The map of the game
+        :param whose_turn:      The animal whose turn it is
+        :param turn_num:        The current turn number
+        :param hunter:          The hunter object
+
+        :return:                The player's choice
         '''
         # TODO: TEMPORARY
         moves_left = 1
@@ -473,33 +505,36 @@ class GameGUI():
         right_button = Button((100, 100), (310, 485), '', self.pixel_font_small)
         right_button.draw(self.screen)
         self.screen.blit(pygame.transform.rotate(self.arrow_image, 270), (335, 510))
-        ability_button = Button((330, 50), (90, 595), "Ability", self.pixel_font_normal)
+        ability_button = Button((320, 50), (90, 595), "Ability", self.pixel_font_normal)
         ability_button.draw(self.screen)
 
         # Checks if the user clicked on the buttons
-        if self.first_click:
-            if up_button.is_clicked():
-                pass
-            elif down_button.is_clicked():
-                pass
-            elif left_button.is_clicked():
-                pass
-            elif right_button.is_clicked():
-                pass
+        # TODO: Add keypresses as well
+        if (up_button.is_clicked() and self.first_click):
+            return 'W'
+        elif (down_button.is_clicked() and self.first_click):
+            return 'S'
+        elif (left_button.is_clicked() and self.first_click):
+            return 'A'
+        elif (right_button.is_clicked() and self.first_click):
+            return 'D'
+        elif (ability_button.is_clicked() and self.first_click):
+            return 'E'
 
-        # TODO: Remove this, this is just a placeholder
-        # Guidelines
-        pygame.draw.rect(self.screen, self.red, (500, 0, 1, 675), 1)
-
-    def game_over(self, moves) -> None:
+    def game_over(self, moves) -> bool:
         '''
         Draws the game over page of the game.
 
         :param moves: The number of moves the player made.
+
+        :return:      True if the player wants to play again, False otherwise.
         '''
         # Draws the bouncing sprite in the background
-        self.game_over_sprite.update()      
-        self.game_over_sprite.draw(self.screen)
+        for each_sprite in self.game_over_sprite_list:
+            each_sprite.update()
+            each_sprite.rotate()
+            each_sprite.draw(self.screen)
+        
 
         # Draws the game over text
         self.draw_text_center("Game Over!", self.pixel_font_huge, self.red, (self.screen_center[0], self.screen_center[1] - 100))
@@ -515,9 +550,10 @@ class GameGUI():
         # Checks if the user clicked on the buttons
         if again_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[7]
+            return True
         elif home_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[1]
-    
+            return False
 
 # TODO: Remove this before committing
 if __name__ == '__main__':
