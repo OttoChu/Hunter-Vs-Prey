@@ -60,6 +60,4 @@ class Button():
         
         :return:                    True if the mouse is clicking the button, False otherwise.
         '''
-        if self.is_hovering() and pygame.mouse.get_pressed()[0]:
-            return True
-        return False
+        return self.is_hovering() and pygame.mouse.get_pressed()[0]

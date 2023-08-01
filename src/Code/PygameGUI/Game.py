@@ -12,6 +12,8 @@ class Game():
         '''
         self.game_over = False # Whether the game is over
         self.fog_of_war = False # Whether the fog of war is enabled
+        self.all_difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"] # A list of all the difficulties.
+        self.all_abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER", "SPOTTER", "BAITER", "SHOOTER"] # A list of all the abilities.
         self.chosen_difficulty = 3 # The difficulty chosen by the player
         self.chosen_ability = 1 # The ability chosen by the player
         self.moves = 1 # The number of moves the player has made

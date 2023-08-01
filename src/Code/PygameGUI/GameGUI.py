@@ -1,7 +1,7 @@
 import pygame
 
 from Button import Button
-from Sprite import Sprite
+from GameSprite import GameSprite
 
 from Hunter import Hunter
 from Prey import Prey
@@ -27,8 +27,8 @@ class GameGUI():
         # States
         # TODO: make this as the function parameter
         self.all_states = ["welcome_page", "homepage", "how_to_play_page", "setting_page", "difficulty_page", 
-                           "fog_of_war_page", "ability_page", "game_page", "game_over_page"]
-        self.current_state = self.all_states[0] # The current state of the game
+                           "fog_of_war_page", "ability_page", "game_page", "choose_teleport_page", "game_over_page"]
+        self.current_state = self.all_states[1] # The current state of the game
 
         # Fonts
         self.normal_font_small = pygame.font.Font("src/Fonts/Arial.ttf", 20) 
@@ -54,48 +54,33 @@ class GameGUI():
         # Graphics
         self.background_image = pygame.transform.scale(pygame.image.load("src/Graphics/background.png"), self.screen_size)
         self.hunter_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/hunter.png"), (30, 30))
+        self.hunter_image_medium = pygame.transform.scale(pygame.image.load("src/Graphics/hunter.png"), (50, 50))
         self.prey_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/prey.png"), (30, 30))
+        self.prey_image_medium = pygame.transform.scale(pygame.image.load("src/Graphics/prey.png"), (50, 50))
         self.tree_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/tree.png"), (30, 30))
+        self.tree_image_medium = pygame.transform.scale(pygame.image.load("src/Graphics/tree.png"), (50, 50))
         self.mountain_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/mountain.png"), (30, 30))
+        self.mountain_image_medium = pygame.transform.scale(pygame.image.load("src/Graphics/mountain.png"), (50, 50))
         self.fog_image_small = pygame.transform.scale(pygame.image.load("src/Graphics/fog.png"), (30, 30))
+        self.fog_image_medium = pygame.transform.scale(pygame.image.load("src/Graphics/fog.png"), (50, 50))
         self.arrow_image = pygame.transform.scale(pygame.image.load("src/Graphics/arrow.png"), (50, 50))
         
-        # Game settings
-        # TODO: Make the difficulty and ability as the state parameters
-        self.all_difficulties = ["EXTRA EASY", "EASY", "NORMAL", "HARD", "EXTRA HARD", "IMPOSSIBLE"] # A list of all the difficulties.
-        self.all_abilities = ["JUMPER", "TIME STOPPER", "TELEPORTER", "SPOTTER", "BAITER", "SHOOTER"] # A list of all the abilities.
-        self.chosen_difficulty = 3 # The chosen difficulty of the game
-        self.chosen_ability = 1 # The chosen ability of the game
-        self.chosen_fog_of_war = False # The chosen fog of war of the game
-
         # Sprites
         game_over_sprite_path = "src/Graphics/funny_cat.png"
-        self.game_over_sprite_list = [Sprite(self.screen_size, game_over_sprite_path) for i in range(20)] # The game over sprite
+        self.game_over_sprite_list = [GameSprite(self.screen_size, game_over_sprite_path) for i in range(20)] # The game over sprite
+
+        # Input variables
+        self.first_keypress = False # Flag to keep track of whether the current key press is the first time
+        self.first_click = False # Flag to keep track of whether the current mouse press is the first time
 
         # Random
         self.game_version = "v2.0.0"
         self.running = True # Flag to keep track of whether the game is running or not
-        self.any_key_pressed = False  # Flag to keep track of key press
-        self.first_click = False # Flag to keep track of whether the current mouse press is the first time
-        self.mouse_held = False # Flag to keep track of whether the mouse is held or not
+        
         self.wait_counter = 0 # Counter used to keep track of how long the frames has passed
         self.current_how_to_play_page = 1 # The current page of the how to play section
         self.current_ability_page = 1 # The current page of the ability section
         
-    def is_first_click(self) -> bool:
-        '''
-        Checks if the current mouse press is the first one.
-        Prevents the user from creating unwanted inputs.
-
-        :return:    True if the current mouse press is the first one, False otherwise.
-        '''
-        if any(pygame.mouse.get_pressed()):
-            if self.mouse_held == False:
-                self.mouse_held = True
-                return True
-            self.mouse_held = True
-        return False
-
     def draw_text_center(self, text: str, font: pygame.font.Font, colour: tuple, center_position: tuple) -> pygame.Rect:
         '''
         Draws text on the screen.
@@ -179,9 +164,8 @@ class GameGUI():
         self.draw_text_center("Press any key to continue"+ '.' * dot_counter, self.pixel_font_normal, (255, 255, 255), (self.screen_center[0], self.screen_center[1] + 100))
         
         # Checks if the user has pressed any key
-        if self.any_key_pressed or (any(pygame.mouse.get_pressed()) and self.first_click):
+        if self.first_keypress or self.first_click:
             self.current_state = self.all_states[1]
-            self.any_key_pressed = False
             self.wait_counter = 0
             
     def homepage(self) -> bool:
@@ -245,7 +229,6 @@ class GameGUI():
             mountain_rect = self.draw_text_topleft("- The squares that you can NOT be on are represented as", self.pixel_font_normal, self.white, (100, self.screen_center[1] + 100))
             self.screen.blit(self.mountain_image_small, (mountain_rect.topright[0] + 10, mountain_rect.topright[1]))
             self.draw_text_topleft("- Invalid move will increment your total moves by 1", self.pixel_font_normal, self.red, (100, self.screen_center[1] + 150))
-            self.draw_text_topleft("- Toggling your special move will count as a turn", self.pixel_font_normal, self.white, (100, self.screen_center[1] + 200))
             
         # Draws the page number
         self.draw_text_topleft(f"Page {self.current_how_to_play_page} of 3", self.pixel_font_small, self.white, (100, self.screen_center[1] + 265))
@@ -296,20 +279,24 @@ class GameGUI():
         elif ability_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[6]
 
-    def difficulty(self) -> None:
+    def difficulty(self, difficulty_name: str) -> int:
         '''
         Draws the difficulty page of the game.
+
+        :param chosen_difficulty: The current difficulty of the game.
+
+        :return: The new difficulty of the game.
         '''
         self.draw_text_center("Difficulty", self.pixel_font_very_large, self.white, (self.screen_center[0], self.screen_center[1] - 250))
         self.draw_text_center("You may change the difficulty of the game by pressing the buttons below", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 150))
-        self.draw_text_center(f"Current Difficulty: {self.all_difficulties[self.chosen_difficulty - 1]}", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 100))
+        self.draw_text_center(f"Current Difficulty: {difficulty_name}", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 100))
         
         # Draws the buttons
         extra_easy_button = Button((200, 100), (self.screen_center[0] - 375, self.screen_center[1] - 50), "Extra Easy", self.pixel_font_normal)
         extra_easy_button.draw(self.screen)
         easy_button = Button((200, 100), (self.screen_center[0] - 100, self.screen_center[1] - 50), "Easy", self.pixel_font_normal)
         easy_button.draw(self.screen)
-        medium_button = Button((200, 100), (self.screen_center[0] + 175, self.screen_center[1] - 50), "Medium", self.pixel_font_normal)
+        medium_button = Button((200, 100), (self.screen_center[0] + 175, self.screen_center[1] - 50), "Normal", self.pixel_font_normal)
         medium_button.draw(self.screen)
         hard_button = Button((200, 100), (self.screen_center[0] - 375, self.screen_center[1] + 100), "Hard", self.pixel_font_normal)
         hard_button.draw(self.screen)
@@ -330,25 +317,27 @@ class GameGUI():
         elif back_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[3]
         elif extra_easy_button.is_clicked() and self.first_click:
-            self.chosen_difficulty = 1
+            return 1
         elif easy_button.is_clicked() and self.first_click:
-            self.chosen_difficulty = 2
+            return 2
         elif medium_button.is_clicked() and self.first_click:
-            self.chosen_difficulty = 3
+            return 3
         elif hard_button.is_clicked() and self.first_click:
-            self.chosen_difficulty = 4
+            return 4
         elif extra_hard_button.is_clicked() and self.first_click:
-            self.chosen_difficulty = 5
+            return 5
         elif impossible_button.is_clicked() and self.first_click:
-            self.chosen_difficulty = 6
+            return 6
 
-    def fog_of_war(self) -> None:
+    def fog_of_war(self, status: bool) -> None:
         '''
         Draws the fog of war page of the game.
+
+        :param status: The current status of the fog of war.
         '''
         self.draw_text_center("Fog of War", self.pixel_font_very_large, self.white, (self.screen_center[0], self.screen_center[1] - 250))
         self.draw_text_center("Increase the difficultly by limiting your vision of the map!", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 150))
-        self.draw_text_center(f"Current Fog of War: {'ON' if self.chosen_fog_of_war else 'OFF'}", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 100))
+        self.draw_text_center(f"Current Fog of War: {'ON' if status else 'OFF'}", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 100))
         self.draw_text_center("The Spotter ability is unavailable if Fog of War is off ", self.pixel_font_normal, self.red, (self.screen_center[0], self.screen_center[1] + 150))
         self.draw_text_center("The Jumper ability will be chosen instead", self.pixel_font_normal, self.red, (self.screen_center[0], self.screen_center[1] + 180))
 
@@ -370,19 +359,17 @@ class GameGUI():
         elif back_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[3]
         elif on_button.is_clicked() and self.first_click:
-            self.chosen_fog_of_war = True
+            return True
         elif off_button.is_clicked() and self.first_click:
-            self.chosen_fog_of_war = False
-            if self.chosen_ability == 4:
-                self.chosen_ability = 1
+            return False
     
-    def ability(self) -> None:
+    def ability(self, ability_name: str) -> None:
         '''
         Draws the ability page of the game.
         '''
         self.draw_text_center("Ability", self.pixel_font_very_large, self.white, (self.screen_center[0], self.screen_center[1] - 250))
         self.draw_text_center("Change your in-game ability to have a different experience", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 150))
-        self.draw_text_center(f"Current Ability: {self.all_abilities[self.chosen_ability - 1]}", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 100))
+        self.draw_text_center(f"Current Ability: {ability_name}", self.pixel_font_normal, self.white, (self.screen_center[0], self.screen_center[1] - 100))
 
         if self.current_ability_page == 1: # Jumper
             self.draw_text_topleft("Jumper", self.pixel_font_large, self.white, (100, self.screen_center[1] - 50))
@@ -444,29 +431,32 @@ class GameGUI():
             if self.current_ability_page > 4:
                 self.current_ability_page = 1
         elif select_ability_button.is_clicked() and self.first_click:
-            self.chosen_ability = self.current_ability_page
-            if self.chosen_ability == 4:
-                self.chosen_fog_of_war = True
+            return self.current_ability_page
 
-    def game(self, game_map: list, whose_turn: str, turn_num: int, hunter: Hunter) -> str:
+    def game(self, game_map: list, fog: bool, turn_num: int, hunter: Hunter) -> str:
         '''
         Draws the game page of the game.
 
         :param game_map:        The map of the game
-        :param whose_turn:      The animal whose turn it is
+        :param fog:             Whether or not to draw the fog of war
         :param turn_num:        The current turn number
         :param hunter:          The hunter object
 
         :return:                The player's choice
         '''
-        # TODO: TEMPORARY
-        moves_left = 1
-
         # Draw the game map
+        hunter_position = hunter.get_position()
         for row in range(len(game_map)):
             for col in range(len(game_map[row])):
                 position = (40*col + 550, 40*row + 40)
-                if game_map[row][col] == T:
+                change = False
+                if fog:
+                    if (col < (hunter_position[0] - hunter.visibility) or col > (hunter_position[0] + hunter.visibility) 
+                        or row < (hunter_position[1] - hunter.visibility) or row > (hunter_position[1] + hunter.visibility)):
+                        change = True
+                if change:
+                    self.screen.blit(self.fog_image_small, position)
+                elif game_map[row][col] == T:
                     self.screen.blit(self.tree_image_small, position)
                 elif game_map[row][col] == H:
                     self.screen.blit(self.hunter_image_small, position)
@@ -476,22 +466,16 @@ class GameGUI():
                     self.screen.blit(self.mountain_image_small, position)
 
         # Draws the turn details
-        if whose_turn == H:
-            self.draw_text_topleft("Hunter's Turn", self.pixel_font_large, self.white, (50, 30))
-            self.draw_text_topleft(f"Turn  {turn_num}", self.pixel_font_normal, self.white, (50, 150))
-            self.draw_text_topleft(f"{moves_left} move(s) left on this turn", self.pixel_font_normal, self.white, (50, 200))
-            self.draw_text_topleft("Current Ability:", self.pixel_font_small, self.white, (50, 275))
-            self.draw_text_topleft(f"{hunter.special_ability}", self.pixel_font_small, self.white, (250, 275))
-            self.draw_text_topleft("Ability status:", self.pixel_font_small, self.white, (50, 300))
-            self.draw_text_topleft(f"{'ON' if hunter.special_status else 'OFF'}", self.pixel_font_small, self.white, (250, 300))
-            self.draw_text_topleft("Charges:", self.pixel_font_small, self.white, (50, 325))
-            self.draw_text_topleft(f"{hunter.charges}", self.pixel_font_small, self.white, (250, 325))
-        
-        elif whose_turn == P:
-            # TODO: Add the details for the prey's turn
-            #       Including what the prey did?
-            self.draw_text_topleft("Prey's Turn", self.pixel_font_large, self.white, (50, 30))
-        
+        self.draw_text_topleft("Make A Move", self.pixel_font_large, self.white, (50, 50))
+        self.draw_text_topleft(f"Turn  {turn_num}", self.pixel_font_normal, self.white, (50, 150))
+        self.draw_text_topleft(f"{hunter.moves_on_turn} move(s) left on this turn", self.pixel_font_normal, self.white, (50, 200))
+        self.draw_text_topleft("Current Ability:", self.pixel_font_small, self.white, (50, 275))
+        self.draw_text_topleft(f"{hunter.special_ability}", self.pixel_font_small, self.white, (250, 275))
+        self.draw_text_topleft("Ability status:", self.pixel_font_small, self.white, (50, 300))
+        self.draw_text_topleft(f"{'ON' if hunter.special_status else 'OFF'}", self.pixel_font_small, self.white, (250, 300))
+        self.draw_text_topleft("Charges:", self.pixel_font_small, self.white, (50, 325))
+        self.draw_text_topleft(f"{hunter.charges}", self.pixel_font_small, self.white, (250, 325))
+              
         # Draws the buttons
         up_button = Button((100, 100), (200 , 375), '', self.pixel_font_small)
         up_button.draw(self.screen)
@@ -509,19 +493,107 @@ class GameGUI():
         ability_button.draw(self.screen)
 
         # Checks if the user clicked on the buttons
-        # TODO: Add keypresses as well
-        if (up_button.is_clicked() and self.first_click):
+        if (up_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_w] and self.first_keypress):
             return 'W'
-        elif (down_button.is_clicked() and self.first_click):
+        elif (down_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_s] and self.first_keypress):
             return 'S'
-        elif (left_button.is_clicked() and self.first_click):
+        elif (left_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_a] and self.first_keypress):
             return 'A'
-        elif (right_button.is_clicked() and self.first_click):
+        elif (right_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_d] and self.first_keypress):
             return 'D'
-        elif (ability_button.is_clicked() and self.first_click):
+        elif (ability_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_e] and self.first_keypress):
             return 'E'
+        
+    def choose_teleport(self, game_map: list, hunter_position: tuple, fog: bool) -> tuple:
+        '''
+        Draws the choose teleport page of the game.
 
-    def game_over(self, moves) -> bool:
+        :param game_map:        The map of the game
+        :param hunter_position: The position of the hunter
+        :param fog:             Whether or not the fog of war is on
+
+        :return:                The new position of the hunter
+        '''
+        # Get the teleport map
+        teleport_map = []
+        hunter_x, hunter_y = hunter_position
+        for y in range(hunter_y - 4, hunter_y + 5):
+            line = []
+            if 0 < y < len(game_map):
+                for x in range(hunter_x - 4, hunter_x + 5):
+                    if 0 < x < len(game_map):
+                        line.append(game_map[y][x])
+                    else:
+                        line.append(M)
+            else:
+                for _ in range(9):
+                    line.append(M)
+            teleport_map.append(line)
+
+        # Adds the fog of war
+        if fog:
+            for row_num in range(len(teleport_map)):
+                if row_num < 2 or row_num > 6:
+                    teleport_map[row_num] = [F for _ in range(9)]
+                for col_num in range(len(teleport_map[row_num])):
+                    if col_num < 2 or col_num > 6:
+                        teleport_map[row_num][col_num] = F
+
+        # Draws the teleport instructions
+        self.draw_text_topleft("Choose a teleport location", self.pixel_font_large, self.white, (50, 30))
+        self.draw_text_topleft("Click on a tile to select a location.", self.pixel_font_small, self.white, (50, 100))
+        self.draw_text_topleft("Only Tree tiles are valid locations.", self.pixel_font_small, self.white, (50, 125))
+        self.draw_text_topleft("Anything else will be invalid!", self.pixel_font_small, self.red, (50, 150))
+        self.draw_text_topleft("Pressing the 'Cancel' button will still use up a charge!", self.pixel_font_small, self.white, (50, 175))
+
+        # Draws the cancel button
+        cancel_button = Button((200, 100), (200, 300), "Cancel", self.pixel_font_normal)
+        cancel_button.draw(self.screen)
+        if cancel_button.is_clicked() and self.first_click:
+            return (hunter_x, hunter_y, False)
+        
+        # Draws the teleport map
+        x_pos, y_pos = 605, 105
+        for each_row in teleport_map:
+            for each_tile in each_row:
+                if each_tile == T:
+                    self.screen.blit(self.tree_image_medium, (x_pos, y_pos))
+                elif each_tile == M:
+                    self.screen.blit(self.mountain_image_medium, (x_pos, y_pos))
+                elif each_tile == H:
+                    self.screen.blit(self.hunter_image_medium, (x_pos, y_pos))
+                elif each_tile == P:
+                    self.screen.blit(self.prey_image_medium, (x_pos, y_pos))
+                elif each_tile == F:
+                    self.screen.blit(self.fog_image_medium, (x_pos, y_pos))
+                x_pos += 60
+            y_pos += 60
+            x_pos = 605
+
+        # Get the rects for the rows and columns to know which tile is chosen
+        rows = []
+        columns = []
+        for offset in range(9):
+            rows.append(pygame.Rect(600, 100 + offset*60, 540, 60))
+            columns.append(pygame.Rect(600 + offset*60, 100, 60, 540))
+        
+        # Get the chosen tile and draw the highlight
+        mouse_pos = pygame.mouse.get_pos()
+        chosen_tile = [-1, -1]
+        for row_num, each_row in enumerate(rows):
+            if each_row.collidepoint(mouse_pos):
+                chosen_tile[1] = row_num
+        for column_num, each_column in enumerate(columns):
+            if each_column.collidepoint(mouse_pos):
+                chosen_tile[0] = column_num
+        if chosen_tile != [-1, -1]:
+            pygame.draw.rect(self.screen, self.red, pygame.Rect(600 + chosen_tile[0]*60, 100 + chosen_tile[1]*60, 60, 60), 2)
+            if self.first_click:
+                if teleport_map[chosen_tile[1]][chosen_tile[0]] == T:
+                    return (hunter_x-4 + chosen_tile[0], hunter_y-4 + chosen_tile[1], True)
+                return (hunter_x, hunter_y, False)
+            
+    def game_over(self, moves: int) -> bool:
         '''
         Draws the game over page of the game.
 
@@ -535,7 +607,6 @@ class GameGUI():
             each_sprite.rotate()
             each_sprite.draw(self.screen)
         
-
         # Draws the game over text
         self.draw_text_center("Game Over!", self.pixel_font_huge, self.red, (self.screen_center[0], self.screen_center[1] - 100))
         self.draw_text_center("The hunter has caught the prey!", self.pixel_font_normal, self.white, self.screen_center)
