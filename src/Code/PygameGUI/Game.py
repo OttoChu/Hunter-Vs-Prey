@@ -60,9 +60,6 @@ class Game():
 
         # Add the Prey onto the board        
         while True:
-            # TODO: Add a loading screen?
-            #       The loading screen could be a progress bar that fills up as the board is being generated?
-
             prey_x = randint(1, self.board_size - 1)
             prey_y = randint(1, self.board_size - 1)
             if self.board[prey_y][prey_x] != M and (prey_x, prey_y) != (hunter_x, hunter_y):

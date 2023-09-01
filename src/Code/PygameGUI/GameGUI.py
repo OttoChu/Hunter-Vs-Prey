@@ -2,9 +2,7 @@ import pygame
 
 from Button import Button
 from GameSprite import GameSprite
-
 from Hunter import Hunter
-from Prey import Prey
 from Tiles import *
 
 
@@ -25,18 +23,11 @@ class GameGUI():
         self.clock = pygame.time.Clock()
 
         # States
-        # TODO: make this as the function parameter
         self.all_states = ["welcome_page", "homepage", "how_to_play_page", "setting_page", "difficulty_page", 
                            "fog_of_war_page", "ability_page", "game_page", "choose_teleport_page", "game_over_page"]
-        self.current_state = self.all_states[1] # The current state of the game
+        self.current_state = self.all_states[0] # The current state of the game
 
         # Fonts
-        self.normal_font_small = pygame.font.Font("src/Fonts/Arial.ttf", 20) 
-        self.normal_font_normal = pygame.font.Font("src/Fonts/Arial.ttf", 30)
-        self.normal_font_large = pygame.font.Font("src/Fonts/Arial.ttf", 50)
-        self.normal_font_very_large = pygame.font.Font("src/Fonts/Arial.ttf", 75)
-        self.normal_font_huge = pygame.font.Font("src/Fonts/Arial.ttf", 100)
-
         self.pixel_font_very_small = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 15)
         self.pixel_font_small = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 20)
         self.pixel_font_normal = pygame.font.Font("src/Fonts/Tickerbit-italic.otf", 30)
@@ -76,7 +67,6 @@ class GameGUI():
         # Random
         self.game_version = "v2.0.0"
         self.running = True # Flag to keep track of whether the game is running or not
-        
         self.wait_counter = 0 # Counter used to keep track of how long the frames has passed
         self.current_how_to_play_page = 1 # The current page of the how to play section
         self.current_ability_page = 1 # The current page of the ability section
@@ -211,8 +201,8 @@ class GameGUI():
 
         elif self.current_how_to_play_page == 2: # Page 2
             self.draw_text_topleft("Controls", self.pixel_font_large, self.white, (100, self.screen_center[1] - 150))
-            self.draw_text_topleft("- Press 'WASD' to move", self.pixel_font_normal, self.white, (100, self.screen_center[1] - 100))
-            self.draw_text_topleft("- Press 'E' to use ability", self.pixel_font_normal, self.white, (100, self.screen_center[1] - 50))
+            self.draw_text_topleft("- Press 'WASD'  or arrow keys to move", self.pixel_font_normal, self.white, (100, self.screen_center[1] - 100))
+            self.draw_text_topleft("- Press 'E' or right shift to use ability", self.pixel_font_normal, self.white, (100, self.screen_center[1] - 50))
             self.draw_text_topleft("- You may also use the on-screen buttons to move and use ability", self.pixel_font_normal, self.white, (100, self.screen_center[1] + 50))
         
         elif self.current_how_to_play_page == 3: # Page 3
@@ -493,15 +483,20 @@ class GameGUI():
         ability_button.draw(self.screen)
 
         # Checks if the user clicked on the buttons
-        if (up_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_w] and self.first_keypress):
+        if ((up_button.is_clicked() and self.first_click)
+            or ((pygame.key.get_pressed()[pygame.K_w] or pygame.key.get_pressed()[pygame.K_UP]) and self.first_keypress)):
             return 'W'
-        elif (down_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_s] and self.first_keypress):
+        elif ((down_button.is_clicked() and self.first_click)
+              or ((pygame.key.get_pressed()[pygame.K_s] or pygame.key.get_pressed()[pygame.K_DOWN]) and self.first_keypress)):
             return 'S'
-        elif (left_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_a] and self.first_keypress):
+        elif ((left_button.is_clicked() and self.first_click)
+              or ((pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]) and self.first_keypress)):
             return 'A'
-        elif (right_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_d] and self.first_keypress):
+        elif ((right_button.is_clicked() and self.first_click) 
+              or ((pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]) and self.first_keypress)):
             return 'D'
-        elif (ability_button.is_clicked() and self.first_click) or (pygame.key.get_pressed()[pygame.K_e] and self.first_keypress):
+        elif ((ability_button.is_clicked() and self.first_click) 
+              or ((pygame.key.get_pressed()[pygame.K_e] or pygame.key.get_pressed()[pygame.K_RSHIFT]) and self.first_keypress)):
             return 'E'
         
     def choose_teleport(self, game_map: list, hunter_position: tuple, fog: bool) -> tuple:
@@ -625,8 +620,3 @@ class GameGUI():
         elif home_button.is_clicked() and self.first_click:
             self.current_state = self.all_states[1]
             return False
-
-# TODO: Remove this before committing
-if __name__ == '__main__':
-    from MainPygame import main
-    main()

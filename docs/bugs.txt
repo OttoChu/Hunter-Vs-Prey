@@ -3,6 +3,10 @@ Bugs
 Feel free to contact me if you find any bugs in the project. 
 I will try to fix them as soon as possible. 
 
+Bugs from the PygameGUI version of the game:
+
+    None so far.
+
 Bugs from the Terminal version of the game:
 (They won't be fixed since the game is now in a newer GUI version)
 

@@ -73,7 +73,7 @@ def main():
         elif game_gui.current_state == "game_page":
             user_move = game_gui.game(game.board, game.fog_of_war, game.moves, hunter)
             # Increment moves if user made a move
-            if user_move != None and hunter.moves_on_turn == 1 and user_move != 'E' or (game_gui.first_keypress and user_move != 'E'):
+            if user_move in ['W', 'A', 'S', 'D'] and game_gui.first_keypress and hunter.moves_on_turn == 1:    
                 game.moves += 1
             # Check if user choose to use ability
             if user_move == 'E':
@@ -119,7 +119,6 @@ def main():
                 hunter.special_status = False
                 if hunter.special_ability == "Jumper":
                     hunter.charges -= 1
-                    hunter.special_status = False
                     hunter.reset_settings()
                 elif hunter.special_ability == "Time Stopper":
                     hunter.moves_on_turn -= 1
@@ -127,17 +126,19 @@ def main():
                         hunter.special_status = True
                 elif hunter.special_ability == "Spotter":
                     hunter.reset_settings()
-                       
+                        
+            # End the game if hunter and prey are on the same position
             if hunter.get_position() == prey.get_position():
+                game.game_over = True
                 game_gui.current_state = "game_over_page"
 
-            # Move prey
-            else:
-                # TODO: Make the prey move after the hunter has moved
-                #       Only move the prey if the hunter is moved and not game over
-                pass
-            #       If yes, game over
-            #       If no, move prey
+            # Move prey if the game is not over
+            elif user_move != None and user_move != 'E' and not hunter.special_status:
+                prey_move = prey.make_move(game.board, hunter.get_position())
+                # Move the prey if it is not already on the best position
+                if prey_move != None:         
+                    game.update_board((prey.get_position()), prey_move, P)
+                    prey.set_coordinate(prey_move)
         
         elif game_gui.current_state == "choose_teleport_page":
             new_coordinates = game_gui.choose_teleport(game.board, hunter.get_position(), game.fog_of_war)
@@ -156,9 +157,11 @@ def main():
                 hunter = Hunter(starting_hunter_pos, game.chosen_ability, game.fog_of_war)
                 prey = Prey(starting_prey_pos)
         
+        # Update the display
         pygame.display.update()
         game_gui.clock.tick(60)
-        
+    
+    # Exit the game
     pygame.quit()
     raise SystemExit
 
