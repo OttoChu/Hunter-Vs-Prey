@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------
+v2.0.0          01/09/2023
+
+- NEW GUI for the game
+    - The game is now playable on a new GUI instead of the terminal
+    - The new GUI is easier to use and more user friendly
+    - The terminal version of the game is no longer supported
+-------------------------------------------------------------------------------------------------------
 v1.6.4          12/07/2023
 
 - LAST VERSION FOR THE TERMINAL VERSION OF THE GAME
