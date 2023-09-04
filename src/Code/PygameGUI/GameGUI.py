@@ -1,9 +1,21 @@
 import pygame
 
-from Button import Button
-from GameSprite import GameSprite
-from Hunter import Hunter
-from Tiles import *
+try:
+    from Button import Button
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Button import Button
+try:
+    from GameSprite import GameSprite
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.GameSprite import GameSprite
+try:
+    from Hunter import Hunter
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Hunter import Hunter
+try:
+    from Tiles import *
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Tiles import *
 
 
 class GameGUI():
@@ -65,7 +77,7 @@ class GameGUI():
         self.first_click = False # Flag to keep track of whether the current mouse press is the first time
 
         # Random
-        self.game_version = "v2.0.0"
+        self.game_version = "v2.0.1"
         self.running = True # Flag to keep track of whether the game is running or not
         self.wait_counter = 0 # Counter used to keep track of how long the frames has passed
         self.current_how_to_play_page = 1 # The current page of the how to play section

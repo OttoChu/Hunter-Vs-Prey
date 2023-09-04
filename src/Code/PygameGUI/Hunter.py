@@ -1,5 +1,8 @@
-from Animal import Animal
-
+try:
+    from Animal import Animal
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Animal import Animal
+    
 
 class Hunter(Animal):
     """

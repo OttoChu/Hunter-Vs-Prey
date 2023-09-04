@@ -1,8 +1,17 @@
 from random import randint
 
-from Animal import Animal
-from Node import Node
-from Tiles import *
+try:
+    from Animal import Animal
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Animal import Animal
+try:
+    from Node import Node
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Node import Node
+try:
+    from Tiles import *
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Tiles import *
 
 class Prey(Animal):
     """

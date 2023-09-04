@@ -1,10 +1,26 @@
 import pygame
 
-from Game import Game
-from GameGUI import GameGUI
-from Hunter import Hunter
-from Prey import Prey
-from Tiles import *
+# Import all classes and functions
+try:
+    from Game import Game
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Game import Game
+try:
+    from GameGUI import GameGUI
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.GameGUI import GameGUI
+try:
+    from Hunter import Hunter
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Hunter import Hunter
+try:
+    from Prey import Prey
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Prey import Prey
+try:
+    from Tiles import *
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Tiles import *
 
 def main():
     pygame.init()
@@ -163,7 +179,7 @@ def main():
     
     # Exit the game
     pygame.quit()
-    raise SystemExit
+    return
 
 if __name__ == "__main__":
     main()

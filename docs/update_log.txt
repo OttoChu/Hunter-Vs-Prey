@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------------------------
+v2.0.1          05/09/2023
+
+- The terminal based interface is now only playable with v1.6.4 and below
+- From v2.0.1 onwards, the game is only playable on the new pygame GUI
+- Fixed a bug where the chosen GUI is not being loaded
+-------------------------------------------------------------------------------------------------------
 v2.0.0          01/09/2023
 
 - NEW GUI for the game

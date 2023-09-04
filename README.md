@@ -3,6 +3,8 @@ This is a game where you play as the Hunter and your goal is to catch the Prey i
 
 This game will be updated sometimes. To see what changed, have a look at the *update_log.txt* under the folder named *"docs"*.
 
+From v2.0.1 onwards, the game will be using a GUI made with Pygame. The terminal version of the game will no longer be updated. If you want to play the terminal version of the game, you will have to run the executable file named *"HunterVsPrey_v1.6.4.exe"*.
+
 **Additional note: This game is built using Python 3.8.10. It might not work on other versions of Python.**
 
 ## Getting Started

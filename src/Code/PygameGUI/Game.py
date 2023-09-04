@@ -1,6 +1,9 @@
 from random import randint
 
-from Tiles import *
+try:
+    from Tiles import *
+except ModuleNotFoundError:
+    from src.Code.PygameGUI.Tiles import *
 
 class Game():
     '''
